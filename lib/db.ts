@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 
 
-const MONGODB_URI = process.env.MONGODB_URI;
+// MONGODB_URI accessed inside dbConnect for runtime evaluation
 
 // MONGODB_URI logging removed for security
 
@@ -26,6 +26,8 @@ async function dbConnect() {
   if (cached.conn) {
     return cached.conn;
   }
+
+  const MONGODB_URI = process.env.MONGODB_URI;
 
   if (!MONGODB_URI) {
     throw new Error(
