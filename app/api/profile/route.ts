@@ -37,7 +37,7 @@ export async function PUT(request: Request) {
       Object.assign(profile, body);
       await profile.save();
     } else {
-      profile = await Profile.create(body);
+      profile = await new Profile(body).save();
     }
 
     return NextResponse.json({ success: true, data: profile });
