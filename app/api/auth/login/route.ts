@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { signToken } from "@/lib/auth";
 import { cookies } from "next/headers";
 
-const ADMIN_PASSWORD = "its@Uday2027";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 export async function POST(request: Request) {
   try {

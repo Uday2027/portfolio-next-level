@@ -10,12 +10,13 @@
   --border: #262626;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #050505;
-    --foreground: #ffffff;
-  }
-} */
+[data-theme='light'] {
+  --background: #ffffff;
+  --foreground: #050505;
+  --muted: #f5f5f5;
+  --muted-foreground: #525252;
+  --border: #e5e5e5;
+}
 
 @theme inline {
   --color-background: var(--background);

@@ -8,6 +8,7 @@ import {
   Github, Linkedin, ChevronDown, ChevronUp, LayoutGrid 
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/components/ThemeProvider";
 
 // --- Types ---
 interface Education {
@@ -39,6 +40,7 @@ interface Profile {
   location: string;
   github: string;
   linkedin: string;
+  themeColor: string;
   education: Education[];
   experience: Experience[];
   skills: Skill[];
@@ -65,10 +67,10 @@ interface Achievement {
 // --- Reusable Components ---
 
 const SectionHeader = ({ icon: Icon, title, action }: { icon: any, title: string, action?: React.ReactNode }) => (
-  <div className="flex items-center justify-between mb-6 pb-2 border-b border-[#262626]">
-    <div className="flex items-center gap-3 text-white">
+  <div className="flex items-center justify-between mb-6 pb-2 border-b border-border">
+    <div className="flex items-center gap-3 text-foreground">
       <div className="p-2 bg-[#2563eb]/10 rounded-lg">
-        <Icon className="w-5 h-5 text-[#2563eb]" />
+        <Icon className="w-5 h-5 text-[var(--accent)]" />
       </div>
       <h2 className="text-xl font-bold">{title}</h2>
     </div>
@@ -90,6 +92,7 @@ function ProfileTab() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const { setThemeColor } = useTheme();
 
   useEffect(() => {
     fetch("/api/profile")
@@ -109,7 +112,7 @@ function ProfileTab() {
              });
         }
         else setProfile({
-            name: "", title: "", university: "", bio: "", email: "", phone: "", location: "", github: "", linkedin: "",
+            name: "", title: "", university: "", bio: "", email: "", phone: "", location: "", github: "", linkedin: "", themeColor: "#2563eb",
             education: [], experience: [], skills: []
         });
       })
@@ -126,6 +129,12 @@ function ProfileTab() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profile),
         });
+        
+        // Update global theme instantly
+        if (profile.themeColor) {
+            setThemeColor(profile.themeColor);
+        }
+        
         alert("Profile saved successfully!");
     } catch(e) {
         alert("Failed to save profile.");
@@ -135,26 +144,30 @@ function ProfileTab() {
 
   // Helper to update profile fields
   const updateProfile = (field: keyof Profile, value: any) => {
-    if (profile) setProfile({ ...profile, [field]: value });
+    setProfile(prev => prev ? ({ ...prev, [field]: value }) : null);
   };
 
   // Array helpers
   const addItem = <T,>(field: keyof Profile, item: T) => {
-     if (profile) setProfile({ ...profile, [field]: [...(profile[field] as T[]), item] });
+     setProfile(prev => prev ? ({ ...prev, [field]: [...(prev[field] as T[]), item] }) : null);
   };
   
   const removeItem = (field: keyof Profile, index: number) => {
-      if (!profile) return;
-      const arr = [...(profile[field] as any[])];
-      arr.splice(index, 1);
-      setProfile({ ...profile, [field]: arr });
+      setProfile(prev => {
+          if (!prev) return null;
+          const arr = [...(prev[field] as any[])];
+          arr.splice(index, 1);
+          return { ...prev, [field]: arr };
+      });
   };
 
   const updateItem = (field: keyof Profile, index: number, subField: string, value: string) => {
-      if (!profile) return;
-      const arr = [...(profile[field] as any[])];
-      arr[index] = { ...arr[index], [subField]: value };
-      setProfile({ ...profile, [field]: arr });
+      setProfile(prev => {
+          if (!prev) return null;
+          const arr = [...(prev[field] as any[])];
+          arr[index] = { ...arr[index], [subField]: value };
+          return { ...prev, [field]: arr };
+      });
   };
 
   if (loading) return <div className="flex h-64 items-center justify-center text-white"><Loader2 className="animate-spin w-8 h-8 text-[#2563eb]" /></div>;
@@ -176,6 +189,21 @@ function ProfileTab() {
            <div className="md:col-span-2">
             <InputGroup label="Bio">
                 <textarea className="input-field h-24 resize-none" value={profile.bio} onChange={e => updateProfile("bio", e.target.value)} />
+             </InputGroup>
+             <InputGroup label="Theme Color">
+                 <div className="flex gap-4 items-center h-24">
+                    <input 
+                        type="color" 
+                        value={profile.themeColor || "#2563eb"} 
+                        onChange={e => updateProfile("themeColor", e.target.value)}
+                        className="h-12 w-24 rounded cursor-pointer border-none bg-transparent"
+                    />
+                    <div className="text-sm text-gray-400">
+                        Pick primary accent color.
+                        <br/>
+                        <span className="text-xs uppercase font-mono text-gray-500">{profile.themeColor}</span>
+                    </div>
+                 </div>
             </InputGroup>
            </div>
         </div>
@@ -233,7 +261,7 @@ function ProfileTab() {
         />
         <div className="space-y-4">
             {profile.education.map((edu, idx) => (
-                <div key={idx} className="group relative bg-[#0a0a0a] p-4 rounded-lg border border-[#333] hover:border-[#2563eb] transition-colors">
+                <div key={idx} className="group relative bg-muted p-4 rounded-lg border border-border hover:border-[var(--accent)] transition-colors">
                     <button onClick={() => removeItem("education", idx)} className="absolute top-2 right-2 p-2 text-gray-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"><X className="w-4 h-4" /></button>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div className="lg:col-span-2"><input className="input-field-sm" placeholder="Institution" value={edu.institution} onChange={e => updateItem("education", idx, "institution", e.target.value)} /></div>
@@ -256,7 +284,7 @@ function ProfileTab() {
         />
         <div className="space-y-4">
             {profile.experience.map((exp, idx) => (
-                <div key={idx} className="group relative bg-[#0a0a0a] p-4 rounded-lg border border-[#333] hover:border-[#2563eb] transition-colors">
+                <div key={idx} className="group relative bg-muted p-4 rounded-lg border border-border hover:border-[var(--accent)] transition-colors">
                     <button onClick={() => removeItem("experience", idx)} className="absolute top-2 right-2 p-2 text-gray-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"><X className="w-4 h-4" /></button>
                     <div className="space-y-3">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -277,19 +305,42 @@ function ProfileTab() {
         <SectionHeader 
             icon={Code2} 
             title="Skills" 
-            action={<button onClick={() => addItem("skills", { name: "", category: "Frontend" })} className="btn-sm"><Plus className="w-4 h-4" /> Add</button>}
+            action={
+                <div className="flex gap-2">
+                    <button onClick={() => {
+                        const defaultSkills = [
+                            { name: "C++", category: "Languages" }, { name: "JavaScript", category: "Languages" }, { name: "TypeScript", category: "Languages" }, { name: "Python", category: "Languages" }, { name: "SQL", category: "Languages" },
+                            { name: "React.js", category: "Frontend" }, { name: "Next.js", category: "Frontend" }, { name: "HTML5", category: "Frontend" }, { name: "CSS3", category: "Frontend" }, { name: "Tailwind CSS", category: "Frontend" },
+                            { name: "Node.js", category: "Backend" }, { name: "Express.js", category: "Backend" }, { name: "FastAPI", category: "Backend" },
+                            { name: "MongoDB", category: "Databases" }, { name: "PostgreSQL", category: "Databases" }, { name: "MySQL", category: "Databases" },
+                            { name: "Git", category: "Tools" }, { name: "GitHub", category: "Tools" }, { name: "Postman", category: "Tools" }, { name: "Vercel", category: "Tools" }, { name: "Render", category: "Tools" }, { name: "Railway", category: "Tools" }, { name: "Docker", category: "Tools" }, { name: "Sentry", category: "Tools" }, { name: "Azure", category: "Tools" }
+                        ];
+                        // Filter out existing skills to avoid duplicates
+                        const newSkills = defaultSkills.filter(newSkill => 
+                            !profile.skills.some(existing => existing.name.toLowerCase() === newSkill.name.toLowerCase())
+                        );
+                        setProfile(prev => {
+                            if (!prev) return null;
+                            return { ...prev, skills: [...prev.skills, ...newSkills] };
+                        });
+                    }} className="btn-secondary text-xs"><Plus className="w-3 h-3" /> Bulk Add Defaults</button>
+                    <button onClick={() => addItem("skills", { name: "", category: "Frontend" })} className="btn-sm"><Plus className="w-4 h-4" /> Add</button>
+                </div>
+            }
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {profile.skills.map((skill, idx) => (
-                <div key={idx} className="group flex items-center gap-2 bg-[#0a0a0a] p-2 rounded border border-[#333] hover:border-[#2563eb] transition-colors">
-                     <input className="bg-transparent text-white text-sm w-full outline-none px-2" placeholder="Skill Name" value={skill.name} onChange={e => updateItem("skills", idx, "name", e.target.value)} />
+                <div key={idx} className="group flex items-center gap-2 bg-muted p-2 rounded border border-border hover:border-[var(--accent)] transition-colors">
+                     <input className="bg-transparent text-foreground text-sm w-full outline-none px-2" placeholder="Skill Name" value={skill.name} onChange={e => updateItem("skills", idx, "name", e.target.value)} />
                      <select 
-                        className="bg-[#1a1a1a] text-gray-400 text-xs border border-[#333] rounded px-1 py-1 outline-none"
+                        className="bg-background text-muted-foreground text-xs border border-border rounded px-1 py-1 outline-none"
                         value={skill.category}
                         onChange={e => updateItem("skills", idx, "category", e.target.value)}
                      >
+                        <option value="Languages">Languages</option>
                         <option value="Frontend">Frontend</option>
                         <option value="Backend">Backend</option>
+                        <option value="Databases">Databases</option>
                         <option value="DevOps">DevOps</option>
                         <option value="Tools">Tools</option>
                         <option value="Other">Other</option>
@@ -453,12 +504,12 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<"profile" | "projects" | "achievements">("profile");
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-[#2563eb] selection:text-white">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-[#2563eb] selection:text-white">
       <style jsx global>{`
         .input-field {
-            background-color: #0f0f0f;
-            border: 1px solid #333;
-            color: white;
+            background-color: var(--muted);
+            border: 1px solid var(--border);
+            color: var(--foreground);
             padding: 0.75rem 1rem;
             border-radius: 0.5rem;
             width: 100%;
@@ -466,14 +517,14 @@ export default function Dashboard() {
         }
         .input-field:focus {
             outline: none;
-            border-color: #2563eb;
-            background-color: #151515;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+            border-color: var(--accent);
+            background-color: var(--background);
+            box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
         }
         .input-field-sm {
-            background-color: #151515;
-            border: 1px solid #333;
-            color: white;
+            background-color: var(--background);
+            border: 1px solid var(--border);
+            color: var(--foreground);
             padding: 0.5rem 0.75rem;
             border-radius: 0.375rem;
             width: 100%;
@@ -482,16 +533,16 @@ export default function Dashboard() {
         }
         .input-field-sm:focus {
             outline: none;
-            border-color: #2563eb;
+            border-color: var(--accent);
         }
         .card {
-            background-color: #1a1a1a;
-            border: 1px solid #262626;
+            background-color: var(--muted);
+            border: 1px solid var(--border);
             border-radius: 1rem;
             padding: 2rem;
         }
         .btn-primary {
-            background-color: #2563eb;
+            background-color: var(--accent);
             color: white;
             padding: 0.6rem 1.25rem;
             border-radius: 0.5rem;
@@ -502,22 +553,22 @@ export default function Dashboard() {
             transition: all 0.2s;
         }
         .btn-primary:hover {
-            background-color: #1d4ed8;
+            opacity: 0.9;
             transform: translateY(-1px);
         }
         .btn-secondary {
-            background-color: #262626;
-            color: white;
+            background-color: var(--border);
+            color: var(--foreground);
             padding: 0.6rem 1.25rem;
             border-radius: 0.5rem;
             font-weight: 500;
             transition: all 0.2s;
         }
         .btn-secondary:hover {
-            background-color: #333;
+            background-color: var(--muted-foreground);
         }
         .btn-sm {
-            background-color: #2563eb;
+            background-color: var(--accent);
             color: white;
             padding: 0.25rem 0.75rem;
             border-radius: 0.25rem;
@@ -529,11 +580,11 @@ export default function Dashboard() {
       `}</style>
 
       {/* Navbar */}
-      <nav className="border-b border-[#262626] bg-[#0a0a0a]/50 backdrop-blur-md sticky top-0 z-40">
+      <nav className="border-b border-border bg-background/50 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
-                <span className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                    <LayoutGrid className="text-[#2563eb]" /> Admin Dashboard
+                <span className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+                    <LayoutGrid className="text-[var(--accent)]" /> Admin Dashboard
                 </span>
                 <div className="flex space-x-1">
                     {[
@@ -548,7 +599,7 @@ export default function Dashboard() {
                                 "px-4 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-2",
                                 activeTab === tab.id 
                                     ? "bg-[#2563eb] text-white shadow-lg shadow-blue-500/20" 
-                                    : "text-gray-400 hover:text-white hover:bg-[#262626]"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
                             )}
                         >
                             <tab.icon className="w-4 h-4" /> {tab.label}

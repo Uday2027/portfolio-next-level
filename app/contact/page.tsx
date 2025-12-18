@@ -61,46 +61,46 @@ export default function Contact() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-4xl font-bold text-white mb-6 border-l-4 border-[#2563eb] pl-4">
+            <h1 className="text-4xl font-bold text-foreground mb-6 border-l-4 border-[var(--accent)] pl-4">
               Get in Touch
             </h1>
-            <p className="text-gray-400 text-lg mb-12">
+            <p className="text-muted-foreground text-lg mb-12">
               Have a project in mind or want to discuss potential opportunities? 
               I&apos;m currently available for freelance work and open to new challenges.
             </p>
 
             <div className="space-y-8">
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 bg-[#1a1a1a] p-3 rounded-lg border border-[#262626]">
-                  <Mail className="w-6 h-6 text-[#2563eb]" />
+                <div className="flex-shrink-0 bg-muted p-3 rounded-lg border border-border">
+                  <Mail className="w-6 h-6 text-[var(--accent)]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-white">Email</h3>
-                  <a href="mailto:zubayerhossain1009@gmail.com" className="text-gray-400 hover:text-[#2563eb] transition-colors">
+                  <h3 className="text-lg font-medium text-foreground">Email</h3>
+                  <a href="mailto:zubayerhossain1009@gmail.com" className="text-muted-foreground hover:text-[var(--accent)] transition-colors">
                     zubayerhossain1009@gmail.com
                   </a>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 bg-[#1a1a1a] p-3 rounded-lg border border-[#262626]">
-                  <Phone className="w-6 h-6 text-[#2563eb]" />
+                <div className="flex-shrink-0 bg-muted p-3 rounded-lg border border-border">
+                  <Phone className="w-6 h-6 text-[var(--accent)]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-white">Phone</h3>
-                  <a href="tel:01876375141" className="text-gray-400 hover:text-[#2563eb] transition-colors">
+                  <h3 className="text-lg font-medium text-foreground">Phone</h3>
+                  <a href="tel:01876375141" className="text-muted-foreground hover:text-[var(--accent)] transition-colors">
                     01876375141
                   </a>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 bg-[#1a1a1a] p-3 rounded-lg border border-[#262626]">
-                  <MapPin className="w-6 h-6 text-[#2563eb]" />
+                <div className="flex-shrink-0 bg-muted p-3 rounded-lg border border-border">
+                  <MapPin className="w-6 h-6 text-[var(--accent)]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-white">Location</h3>
-                  <p className="text-gray-400">
+                  <h3 className="text-lg font-medium text-foreground">Location</h3>
+                  <p className="text-muted-foreground">
                     Sylhet, Bangladesh (SUST)
                   </p>
                 </div>
@@ -113,14 +113,14 @@ export default function Contact() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-[#1a1a1a] p-8 rounded-xl border border-[#262626]"
+            className="bg-muted p-8 rounded-xl border border-border"
           >
-            <h2 className="text-2xl font-bold text-white mb-6">Send Message</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-6">Send Message</h2>
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-2">
+                  <label htmlFor="name" className="block text-sm font-medium text-muted-foreground mb-2">
                     Name
                   </label>
                   <input
@@ -130,12 +130,12 @@ export default function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full bg-[#050505] border border-[#262626] rounded-md px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition-colors"
+                    className="w-full bg-background border border-border rounded-md px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-colors"
                     placeholder="Your Name"
                   />
                 </div>
                 <div>
-                  <label htmlFor="mobile" className="block text-sm font-medium text-gray-400 mb-2">
+                  <label htmlFor="mobile" className="block text-sm font-medium text-muted-foreground mb-2">
                     Mobile Number
                   </label>
                   <input
@@ -144,14 +144,14 @@ export default function Contact() {
                     name="mobile"
                     value={formData.mobile}
                     onChange={handleChange}
-                    className="w-full bg-[#050505] border border-[#262626] rounded-md px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition-colors"
+                    className="w-full bg-background border border-border rounded-md px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-colors"
                     placeholder="018..."
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-2">
+                <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-2">
                   Email Address
                 </label>
                 <input
@@ -161,13 +161,13 @@ export default function Contact() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full bg-[#050505] border border-[#262626] rounded-md px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition-colors"
+                  className="w-full bg-background border border-border rounded-md px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-colors"
                   placeholder="john@example.com"
                 />
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-400 mb-2">
+                <label htmlFor="message" className="block text-sm font-medium text-muted-foreground mb-2">
                   Message
                 </label>
                 <textarea
@@ -177,7 +177,7 @@ export default function Contact() {
                   onChange={handleChange}
                   required
                   rows={4}
-                  className="w-full bg-[#050505] border border-[#262626] rounded-md px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition-colors"
+                  className="w-full bg-background border border-border rounded-md px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-colors"
                   placeholder="Your message here..."
                 />
               </div>
@@ -185,7 +185,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="w-full flex items-center justify-center space-x-2 bg-[#2563eb] hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center space-x-2 bg-[var(--accent)] hover:opacity-90 text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {status === "loading" ? (
                   <>

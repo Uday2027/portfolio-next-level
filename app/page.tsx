@@ -2,6 +2,7 @@
 "use client";
 
 import TypewriterText from "@/components/TypewriterText";
+import SpotlightCard from "@/components/SpotlightCard";
 import Link from "next/link";
 import { ArrowRight, Download, Mail, Phone, MapPin, Github, Linkedin, Loader2, GraduationCap, Briefcase, Code2, ChevronDown, User, Hash, ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -115,7 +116,7 @@ export default function Home() {
       return acc;
   }, {} as Record<string, string[]>);
 
-  const categories = ["Frontend", "Backend", "DevOps", "Tools", "Other"];
+  const categories = ["Languages", "Frontend", "Backend", "Databases", "DevOps", "Tools", "Other"];
 
   const scrollTo = (id: string) => {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -136,11 +137,11 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen relative bg-[#050505] selection:bg-[#2563eb] selection:text-white overflow-hidden">
+    <div className="flex flex-col items-center min-h-screen relative bg-background selection:bg-[var(--accent)] selection:text-white overflow-hidden">
       
       {/* Scroll Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-[#2563eb] origin-left z-[100]"
+        className="fixed top-0 left-0 right-0 h-1 bg-[var(--accent)] origin-left z-[100]"
         style={{ scaleX }}
       />
 
@@ -164,15 +165,15 @@ export default function Home() {
              >
                  <div className={cn(
                      "absolute inset-0 rounded-full border border-gray-800 bg-[#0a0a0a] transition-all duration-300",
-                     activeSection === item.id ? "scale-100 border-[#2563eb] shadow-[0_0_15px_rgba(37,99,235,0.3)]" : "scale-75 group-hover:scale-90 group-hover:border-gray-600"
+                     activeSection === item.id ? "scale-100 border-[var(--accent)] shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)]" : "scale-75 group-hover:scale-90 group-hover:border-gray-600"
                  )} />
                  <item.icon className={cn(
                      "w-3 h-3 xl:w-4 xl:h-4 relative z-10 transition-colors duration-300",
-                     activeSection === item.id ? "text-[#2563eb]" : "text-gray-500 group-hover:text-gray-300"
+                     activeSection === item.id ? "text-[var(--accent)]" : "text-gray-500 group-hover:text-gray-300"
                  )} />
                  
                  {/* Label Tooltip - Hidden on mobile, visible on XML */}
-                 <span className="hidden xl:block absolute left-14 px-3 py-1 rounded bg-[#1a1a1a] border border-[#333] text-xs font-semibold tracking-wide text-gray-300 opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 whitespace-nowrap z-50 pointer-events-none">
+                 <span className="hidden xl:block absolute left-14 px-3 py-1 rounded bg-muted border border-[#333] text-xs font-semibold tracking-wide text-gray-300 opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 whitespace-nowrap z-50 pointer-events-none">
                      {item.label}
                  </span>
              </button>
@@ -184,8 +185,9 @@ export default function Home() {
       <section id="hero" className="relative flex flex-col items-center justify-center min-h-[calc(100vh-64px)] pl-16 pr-4 sm:px-6 lg:px-8 w-full">
          {/* Background Elements - Minimal Tech Vibe */}
          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#2563eb]/5 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#2563eb]/5 rounded-full blur-3xl" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl" />
          </div>
 
         <motion.div 
@@ -195,14 +197,14 @@ export default function Home() {
             className="text-left space-y-8 max-w-5xl mx-auto relative z-10 pb-16 w-full pt-4 sm:pt-0"
         >
             <motion.div variants={fadeInUp} className="space-y-6">
-                <div className="inline-block px-4 py-1.5 rounded-full border border-[#2563eb]/30 bg-[#2563eb]/5 text-[#2563eb] text-sm font-semibold tracking-wider uppercase backdrop-blur-sm">
+                <div className="inline-block px-4 py-1.5 rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/5 text-[var(--accent)] text-sm font-semibold tracking-wider uppercase backdrop-blur-sm">
                     Open to Work
                 </div>
                 
                 <div className="relative block w-full">
                     <TypewriterText
                         text={profile.name}
-                        className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter text-white break-words justify-start"
+                        className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter text-foreground break-words justify-start"
                     />
                     {/* Decorative Circuit Lines - Simulated with borders */}
                     <div className="hidden lg:block absolute -right-12 top-1/2 w-8 h-[1px] bg-[#333]" />
@@ -210,17 +212,17 @@ export default function Home() {
                 </div>
 
                 <p className="text-xl sm:text-2xl md:text-3xl text-gray-400 font-light max-w-3xl leading-normal">
-                    <span className="text-white font-normal">{profile.title}</span> based in {profile.location?.split(',')[0]}
+                    <span className="text-foreground font-normal">{profile.title}</span> 
                 </p>
-                
+{/*                 
                 <div className="flex items-center justify-start gap-3 text-gray-500 font-mono text-sm sm:text-base">
-                    <MapPin className="w-4 h-4 text-[#2563eb]" />
+                    <MapPin className="w-4 h-4 text-[var(--accent)]" />
                     <span>{profile.university}</span>
-                </div>
+                </div> */}
             </motion.div>
 
             {profile.bio && profile.bio.trim() !== '""' && profile.bio.trim() !== '' && (
-                <motion.p variants={fadeInUp} className="text-gray-400 text-lg sm:text-xl max-w-2xl leading-relaxed border-l-2 border-[#2563eb] pl-6 text-left italic bg-[#1a1a1a]/30 p-4 rounded-r-lg backdrop-blur-sm">
+                <motion.p variants={fadeInUp} className="text-gray-400 text-lg sm:text-xl max-w-2xl leading-relaxed border-l-2 border-[var(--accent)] pl-6 text-left italic bg-muted/30 p-4 rounded-r-lg backdrop-blur-sm">
                     "{profile.bio}"
                 </motion.p>
             )}
@@ -228,14 +230,14 @@ export default function Home() {
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-5 justify-start mt-12 text-sm sm:text-base">
                 <Link
                     href="/projects"
-                    className="group relative px-6 py-4 bg-[#2563eb] text-white font-bold rounded-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] w-fit"
+                    className="group relative px-6 py-4 bg-[var(--accent)] text-foreground font-bold rounded-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)] w-fit"
                 >
                     <span className="relative z-10 flex items-center gap-2 justify-center">View Projects <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
                     <div className="absolute inset-0 bg-white/20 translate-y-full skew-y-12 group-hover:translate-y-0 transition-transform duration-500" />
                 </Link>
                 <Link
                     href="/contact"
-                    className="group px-6 py-4 bg-transparent border border-[#333] text-white font-bold rounded-lg hover:bg-[#1a1a1a] hover:border-[#2563eb] transition-all flex items-center gap-2 justify-center w-fit"
+                    className="group px-6 py-4 bg-transparent border border-[#333] text-foreground font-bold rounded-lg hover:bg-muted hover:border-[var(--accent)] transition-all flex items-center gap-2 justify-center w-fit"
                 >
                     Contact Me <Mail className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                 </Link>
@@ -243,12 +245,12 @@ export default function Home() {
             
             <motion.div variants={fadeInUp} className="flex gap-6 items-center justify-start pt-1 mb-16 sm:mb-0">
                     {profile.linkedin && (
-                        <Link href={profile.linkedin} target="_blank" className="p-3 rounded-full bg-[#1a1a1a] border border-[#333] text-gray-400 hover:text-[#0a66c2] hover:border-[#0a66c2] hover:-translate-y-1 transition-all duration-300">
+                        <Link href={profile.linkedin} target="_blank" className="p-3 rounded-full bg-muted border border-[#333] text-gray-400 hover:text-[#0a66c2] hover:border-[#0a66c2] hover:-translate-y-1 transition-all duration-300">
                             <Linkedin className="w-6 h-6" />
                         </Link>
                     )}
                     {profile.github && (
-                        <Link href={profile.github} target="_blank" className="p-3 rounded-full bg-[#1a1a1a] border border-[#333] text-gray-400 hover:text-white hover:border-white hover:-translate-y-1 transition-all duration-300">
+                        <Link href={profile.github} target="_blank" className="p-3 rounded-full bg-muted border border-[#333] text-gray-400 hover:text-foreground hover:border-white hover:-translate-y-1 transition-all duration-300">
                             <Github className="w-6 h-6" />
                         </Link>
                     )}
@@ -264,17 +266,17 @@ export default function Home() {
         >
             <div className="hidden sm:flex gap-4 text-xs font-mono text-gray-500 uppercase tracking-[0.2em] border-t border-b border-[#333] py-2 px-8 bg-[#0a0a0a]/80 backdrop-blur rounded-full">
                 <span>Experience</span>
-                <span className="text-[#2563eb]">•</span>
+                <span className="text-[var(--accent)]">•</span>
                 <span>Scroll</span>
-                <span className="text-[#2563eb]">•</span>
+                <span className="text-[var(--accent)]">•</span>
                 <span>Skills</span>
             </div>
             {/* Mobile simplified scroll text */}
             <div className="sm:hidden text-[10px] font-mono text-gray-600 uppercase tracking-widest mb-1">
                 Scroll
             </div>
-            <button onClick={() => scrollTo("experience")} className="animate-bounce cursor-pointer p-2 rounded-full hover:bg-[#1a1a1a] transition-colors pointer-events-auto big-hit-area">
-                <ChevronDown className="w-6 h-6 text-[#2563eb]" />
+            <button onClick={() => scrollTo("experience")} className="animate-bounce cursor-pointer p-2 rounded-full hover:bg-muted transition-colors pointer-events-auto big-hit-area">
+                <ChevronDown className="w-6 h-6 text-[var(--accent)]" />
             </button>
         </motion.div>
       </section>
@@ -289,10 +291,10 @@ export default function Home() {
                     viewport={{ once: true }}
                     className="flex items-center gap-4 mb-12 md:mb-16"
                   >
-                      <div className="p-3 bg-[#2563eb]/10 rounded-xl">
-                          <Briefcase className="w-8 h-8 text-[#2563eb]" />
+                      <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
+                          <Briefcase className="w-8 h-8 text-[var(--accent)]" />
                       </div>
-                      <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">Professional <span className="text-[#2563eb]">Exp.</span></h2>
+                      <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Professional <span className="text-[var(--accent)]">Exp.</span></h2>
                   </motion.div>
 
                   <div className="relative space-y-12 md:space-y-16 pl-6 md:pl-0">
@@ -314,21 +316,21 @@ export default function Home() {
                             )}
                           >
                               {/* Connector Dot */}
-                              <div className="absolute left-[-1.5rem] md:left-1/2 top-0 md:top-1/2 w-4 h-4 rounded-full bg-[#0a0a0a] border-4 border-[#2563eb] -translate-x-1/2 md:-translate-y-1/2 z-10 group-hover:scale-150 transition-transform duration-300 shadow-[0_0_10px_#2563eb] mt-1 md:mt-0" />
+                              <div className="absolute left-[-1.5rem] md:left-1/2 top-0 md:top-1/2 w-4 h-4 rounded-full bg-[#0a0a0a] border-4 border-[var(--accent)] -translate-x-1/2 md:-translate-y-1/2 z-10 group-hover:scale-150 transition-transform duration-300 shadow-[0_0_10px_var(--accent)] mt-1 md:mt-0" />
 
                               {/* Content Card */}
                               <div className="md:w-1/2">
-                                  <div className="bg-[#1a1a1a] p-6 md:p-8 rounded-2xl border border-[#262626] hover:border-[#2563eb] transition-all duration-300 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)] group-hover:-translate-y-2">
+                                  <SpotlightCard className="p-6 md:p-8 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)] group-hover:-translate-y-2 border-0 bg-muted">
                                       <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2">
-                                          <h3 className="text-xl md:text-2xl font-bold text-white">{exp.role}</h3>
-                                          <span className="text-xs font-mono text-[#2563eb] bg-[#2563eb]/10 px-3 py-1 rounded-full border border-[#2563eb]/20 whitespace-nowrap">{exp.duration}</span>
+                                          <h3 className="text-xl md:text-2xl font-bold text-foreground">{exp.role}</h3>
+                                          <span className="text-xs font-mono text-[var(--accent)] bg-[var(--accent)]/10 px-3 py-1 rounded-full border border-[var(--accent)]/20 whitespace-nowrap">{exp.duration}</span>
                                       </div>
-                                      <div className="text-base md:text-lg text-gray-300 font-medium mb-4 flex items-center gap-2">
-                                          <span className="w-2 h-2 bg-[#2563eb] rounded-full" />
+                                      <div className="text-base md:text-lg text-muted-foreground font-medium mb-4 flex items-center gap-2">
+                                          <span className="w-2 h-2 bg-[var(--accent)] rounded-full" />
                                           {exp.company}
                                       </div>
                                       <p className="text-gray-400 leading-relaxed whitespace-pre-wrap text-sm">{exp.description}</p>
-                                  </div>
+                                  </SpotlightCard>
                               </div>
                               <div className="md:w-1/2" /> {/* Spacer for alternating layout */}
                           </motion.div>
@@ -340,7 +342,7 @@ export default function Home() {
 
        {/* Skills Section */}
        {profile.skills?.length > 0 && (
-          <section id="skills" className="w-full py-12 md:py-24 px-4 sm:px-6 bg-[#080808] border-t border-[#262626]">
+          <section id="skills" className="w-full py-12 md:py-24 px-4 sm:px-6 bg-background border-t border-border">
               <div className="max-w-6xl mx-auto pl-12 sm:pl-0">
                   <motion.div 
                     initial={{ opacity: 0, x: -20 }}
@@ -348,10 +350,10 @@ export default function Home() {
                     viewport={{ once: true }}
                     className="flex items-center gap-4 mb-12 md:mb-16"
                   >
-                      <div className="p-3 bg-[#2563eb]/10 rounded-xl">
-                          <Code2 className="w-8 h-8 text-[#2563eb]" />
+                      <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
+                          <Code2 className="w-8 h-8 text-[var(--accent)]" />
                       </div>
-                      <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">Technical <span className="text-[#2563eb]">Arsenhal</span></h2>
+                      <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Technical <span className="text-[var(--accent)]">Arsenhal</span></h2>
                   </motion.div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -366,17 +368,17 @@ export default function Home() {
                                 whileInView={{ opacity: 1, scale: 1 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: catIdx * 0.1 }}
-                                className="group relative bg-[#121212] p-6 md:p-8 rounded-[2rem] border border-[#262626] hover:border-[#2563eb] transition-all duration-300 hover:shadow-2xl overflow-hidden"
+                                className="group relative bg-muted p-6 md:p-8 rounded-[2rem] border border-border hover:border-[var(--accent)] transition-all duration-300 hover:shadow-2xl overflow-hidden"
                               >
                                   {/* Hover Glow Effect */}
-                                  <div className="absolute inset-0 bg-gradient-to-br from-[#2563eb]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                                   
-                                  <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3 relative z-10">
-                                      <Hash className="w-5 h-5 text-[#2563eb]" /> {cat}
+                                  <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-3 relative z-10">
+                                      <Hash className="w-5 h-5 text-[var(--accent)]" /> {cat}
                                   </h3>
                                   <div className="flex flex-wrap gap-2 relative z-10">
                                       {skills.map((skill, i) => (
-                                          <div key={i} className="px-3 py-1.5 bg-[#1a1a1a] text-gray-300 rounded-lg text-sm font-medium border border-[#333] transition-all duration-300 group-hover:border-[#2563eb]/30 group-hover:text-white hover:!bg-[#2563eb] hover:!border-[#2563eb] cursor-default">
+                                          <div key={i} className="px-3 py-1.5 bg-muted text-muted-foreground rounded-lg text-sm font-medium border border-border transition-all duration-300 group-hover:border-[var(--accent)]/30 group-hover:text-foreground hover:!bg-[var(--accent)] hover:!border-[var(--accent)] cursor-default">
                                               {skill}
                                           </div>
                                       ))}
@@ -393,7 +395,7 @@ export default function Home() {
       {profile.education?.length > 0 && (
           <section id="education" className="w-full py-12 md:py-24 px-4 sm:px-6 relative overflow-hidden">
                {/* Background Decoration */}
-               <div className="absolute top-1/2 right-0 w-96 h-96 bg-[#2563eb]/5 rounded-full blur-3xl -translate-y-1/2 pointer-events-none" />
+               <div className="absolute top-1/2 right-0 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl -translate-y-1/2 pointer-events-none" />
 
               <div className="max-w-6xl mx-auto relative z-10 pl-12 sm:pl-0">
                   <motion.div 
@@ -402,10 +404,10 @@ export default function Home() {
                     viewport={{ once: true }}
                     className="flex items-center gap-4 mb-12 md:mb-16"
                   >
-                      <div className="p-3 bg-[#2563eb]/10 rounded-xl">
-                          <GraduationCap className="w-8 h-8 text-[#2563eb]" />
+                      <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
+                          <GraduationCap className="w-8 h-8 text-[var(--accent)]" />
                       </div>
-                      <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">Academic <span className="text-[#2563eb]">Journey</span></h2>
+                      <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Academic <span className="text-[var(--accent)]">Journey</span></h2>
                   </motion.div>
 
                   <div className="grid grid-cols-1 gap-6">
@@ -427,22 +429,23 @@ export default function Home() {
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: idx * 0.1 }}
-                                className="group relative bg-[#1a1a1a] p-6 md:p-10 rounded-2xl border border-[#262626] hover:border-[#2563eb] transition-all duration-500 overflow-hidden"
+                                className="group relative bg-muted p-6 md:p-10 rounded-2xl border border-border hover:border-[var(--accent)] transition-all duration-500 overflow-hidden"
                             >
-                                <div className="absolute right-0 top-0 h-full w-2 bg-[#2563eb] scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top" />
+                                <div className="absolute right-0 top-0 h-full w-2 bg-[var(--accent)] scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top" />
                                 
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                                     <div className="space-y-2">
-                                        <h3 className="text-2xl md:text-3xl font-bold text-white group-hover:text-[#2563eb] transition-colors">{edu.institution}</h3>
-                                        <div className="flex items-center gap-3 text-lg md:text-xl text-gray-300">
-                                            <GraduationCap className="w-5 h-5 text-gray-500" />
+                                        <h3 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-[var(--accent)] transition-colors">{edu.institution}</h3>
+                                        <div className="flex items-center gap-3 text-lg md:text-xl text-muted-foreground">
+                                            <GraduationCap className="w-5 h-5 text-muted-foreground" />
                                             {edu.degree}
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3 bg-[#0a0a0a] px-6 py-3 rounded-full border border-[#333] group-hover:border-[#2563eb]/30 transition-colors w-fit">
-                                        <span className="text-[#2563eb] font-bold whitespace-nowrap">{edu.startDate}</span>
-                                        <ArrowRight className="w-4 h-4 text-gray-600" />
-                                        <span className="text-white font-bold whitespace-nowrap">{endDisplay}</span>
+                                    <div className="flex items-center gap-3 bg-muted px-6 py-3 rounded-full border border-border group-hover:border-[var(--accent)]/30 transition-colors w-fit">
+                                        <span className="text-[var(--accent)] font-bold whitespace-nowrap">{edu.startDate}</span>
+                                        <ArrowRight className="w-4 h-4 text-muted-foreground" />
+
+                                        <span className="text-foreground font-bold whitespace-nowrap">{endDisplay}</span>
                                     </div>
                                 </div>
                             </motion.div>
@@ -459,7 +462,7 @@ export default function Home() {
             scroll-behavior: smooth;
         }
         ::selection {
-            background-color: #2563eb;
+            background-color: var(--accent);
             color: white;
         }
       `}</style>

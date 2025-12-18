@@ -29,16 +29,16 @@ export default function Projects() {
       });
   }, []);
 
-  if (loading) return <div className="min-h-screen text-white flex justify-center items-center">Loading...</div>;
+  if (loading) return <div className="min-h-screen text-foreground flex justify-center items-center">Loading...</div>;
 
   return (
     <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4 border-l-4 border-[#2563eb] pl-4">
+          <h1 className="text-4xl font-bold text-foreground mb-4 border-l-4 border-[var(--accent)] pl-4">
             Notable Projects
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl">
+          <p className="text-muted-foreground text-lg max-w-2xl">
             Here are some of the projects I&apos;ve worked on. Each project represents a unique challenge and a solution engineered with precision.
           </p>
         </div>
@@ -47,18 +47,18 @@ export default function Projects() {
           {projects.map((project) => (
             <div
               key={project._id}
-              className="group relative bg-[#1a1a1a] border border-[#262626] rounded-lg overflow-hidden hover:border-[#2563eb] transition-all duration-300 flex flex-col"
+              className="group relative bg-muted border border-border rounded-lg overflow-hidden hover:border-[var(--accent)] transition-all duration-300 flex flex-col"
             >
               <div className="p-6 flex-grow">
                 <div className="flex justify-between items-start mb-4">
-                  <div className="p-2 bg-[#050505] rounded-md border border-[#262626] group-hover:border-[#2563eb] transition-colors">
-                    <Code className="w-6 h-6 text-[#2563eb]" />
+                  <div className="p-2 bg-background rounded-md border border-border group-hover:border-[var(--accent)] transition-colors">
+                    <Code className="w-6 h-6 text-[var(--accent)]" />
                   </div>
                   <div className="flex gap-2">
                     {project.githubLink && (
                         <Link
                         href={project.githubLink}
-                        className="text-gray-400 hover:text-white transition-colors"
+                        className="text-muted-foreground hover:text-foreground transition-colors"
                         target="_blank"
                         >
                         <Github className="w-5 h-5" />
@@ -67,7 +67,7 @@ export default function Projects() {
                     {project.liveLink && (
                         <Link
                         href={project.liveLink}
-                        className="text-gray-400 hover:text-white transition-colors"
+                        className="text-muted-foreground hover:text-foreground transition-colors"
                         target="_blank"
                         >
                         <ExternalLink className="w-5 h-5" />
@@ -76,20 +76,20 @@ export default function Projects() {
                   </div>
                 </div>
                 
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#2563eb] transition-colors">
+                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-[var(--accent)] transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-gray-400 mb-6 line-clamp-3">
+                <p className="text-muted-foreground mb-6 line-clamp-3">
                   {project.description}
                 </p>
               </div>
 
-              <div className="px-6 py-4 border-t border-[#262626] bg-[#0f0f0f]">
+              <div className="px-6 py-4 border-t border-border bg-background/50">
                 <div className="flex flex-wrap gap-2">
                   {project.technologies.map((t, i) => (
                     <span
                       key={i}
-                      className="text-xs font-medium px-2 py-1 rounded bg-[#1a1a1a] text-gray-300 border border-[#262626]"
+                      className="text-xs font-medium px-2 py-1 rounded bg-muted text-muted-foreground border border-border"
                     >
                       {t}
                     </span>
@@ -109,7 +109,7 @@ export default function Projects() {
         <div className="mt-16 text-center">
             <Link 
                 href="#"
-                className="inline-flex items-center text-[#2563eb] hover:text-blue-400 font-semibold text-lg transition-colors"
+                className="inline-flex items-center text-[var(--accent)] hover:underline font-semibold text-lg transition-colors"
             >
                 View all projects on GitHub <Github className="ml-2 w-5 h-5" />
             </Link>
