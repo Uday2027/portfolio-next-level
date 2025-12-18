@@ -124,11 +124,17 @@ function ProfileTab() {
     if (!profile) return;
     setSaving(true);
     try {
-        await fetch("/api/profile", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(profile),
+        const res = await fetch("/api/profile", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(profile),
         });
+        
+        const data = await res.json();
+        
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to save profile.");
+        }
         
         // Update global theme instantly
         if (profile.themeColor) {
@@ -136,8 +142,9 @@ function ProfileTab() {
         }
         
         alert("Profile saved successfully!");
-    } catch(e) {
-        alert("Failed to save profile.");
+    } catch(e: any) {
+        console.error("Save Error:", e);
+        alert(e.message || "Failed to save profile.");
     }
     setSaving(false);
   };

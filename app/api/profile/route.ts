@@ -26,25 +26,30 @@ export async function PUT(request: Request) {
     const body = await request.json();
     await dbConnect();
 
-    // Upsert: update if exists, otherwise create
-    let profile = await Profile.findOne();
-    if (profile) {
-      // Remove immutable fields
-      delete body._id;
-      delete body.createdAt;
-      delete body.updatedAt;
-      delete body.__v;
-      
-      Object.assign(profile, body);
-      await profile.save();
-    } else {
-      profile = await new Profile(body).save();
-    }
+    // Remove immutable or sensitive fields from body to be safe
+    const { _id, createdAt, updatedAt, __v, ...updateData } = body;
+
+    const profile = await Profile.findOneAndUpdate(
+      {}, // find first profile
+      { $set: updateData },
+      { 
+        upsert: true, 
+        new: true, 
+        runValidators: true,
+        setDefaultsOnInsert: true 
+      }
+    );
 
     return NextResponse.json({ success: true, data: profile });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error("PUT Profile Error:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error("PUT Profile Error Detail:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message || "Internal Server Error" 
+    }, { status: 500 });
   }
 }

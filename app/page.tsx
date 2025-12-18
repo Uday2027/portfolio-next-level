@@ -4,7 +4,7 @@
 import TypewriterText from "@/components/TypewriterText";
 import SpotlightCard from "@/components/SpotlightCard";
 import Link from "next/link";
-import { ArrowRight, Download, Mail, Phone, MapPin, Github, Linkedin, Loader2, GraduationCap, Briefcase, Code2, ChevronDown, User, Hash, ExternalLink } from "lucide-react";
+import { ArrowRight, Mail, Github, Linkedin, Loader2, GraduationCap, Briefcase, Code2, ChevronDown, User, Hash, ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { motion, useScroll, useSpring } from "framer-motion";
@@ -60,13 +60,14 @@ export default function Home() {
     fetch(`/api/profile?t=${new Date().getTime()}`, { headers: { 'Cache-Control': 'no-store' }})
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);  
         if (data.success && data.data) {
           setProfile(data.data);
         } else {
              // Fallback
              setProfile({
                  name: "Zubayer Hossain Uday",
-                 title: "BSc (Eng) in Computer Science And Engineering",
+                 title: "Full Stack Developer",
                  university: "Shahjalal University of Science and Technology (SUST)",
                  bio: "Full Stack Developer with a passion for building scalable applications and DevSecOps practices.",
                  email: "zubayerhossain1009@gmail.com",
