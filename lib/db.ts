@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 
 
-const MONGODB_URI = "mongodb://localhost:27017/portfolio";
+const MONGODB_URI = process.env.MONGODB_URI;
 
 // Cached connection state
 interface MongooseCache {
