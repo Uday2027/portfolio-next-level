@@ -17,7 +17,7 @@ export interface IExperience {
 
 export interface ISkill {
   name: string;
-  category: "Frontend" | "Backend" | "DevOps" | "Tools" | "Other";
+  category: "Languages" | "Frontend" | "Backend" | "Databases" | "DevOps" | "Tools" | "Other";
 }
 
 export interface IProfile extends Document {
@@ -25,6 +25,7 @@ export interface IProfile extends Document {
   title: string;
   university: string;
   bio: string;
+  themeColor?: string;
   email: string;
   phone: string;
   location: string;
@@ -60,6 +61,7 @@ const ProfileSchema: Schema = new Schema({
   title: { type: String, required: true },
   university: { type: String, required: true },
   bio: { type: String },
+  themeColor: { type: String, default: "#2563eb" },
   email: { type: String, required: true },
   phone: { type: String },
   location: { type: String },

@@ -10,6 +10,7 @@ export async function GET() {
     const profile = await Profile.findOne().sort({ createdAt: -1 });
     return NextResponse.json({ success: true, data: profile });
   } catch (error: any) {
+    console.error("GET Profile Error:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
@@ -25,18 +26,23 @@ export async function PUT(request: Request) {
     await dbConnect();
 
     // Upsert: update if exists, otherwise create
-    // We assume mostly one profile, so we find one or create
     let profile = await Profile.findOne();
     if (profile) {
+      // Remove immutable fields
+      delete body._id;
+      delete body.createdAt;
+      delete body.updatedAt;
+      delete body.__v;
+      
       Object.assign(profile, body);
       await profile.save();
     } else {
-      // @ts-ignore
       profile = await Profile.create(body);
     }
 
     return NextResponse.json({ success: true, data: profile });
   } catch (error: any) {
+    console.error("PUT Profile Error:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }

@@ -30,8 +30,8 @@ export default function Achievements() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen text-white">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      <div className="flex justify-center items-center min-h-screen text-foreground">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -40,10 +40,10 @@ export default function Achievements() {
     <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4 border-l-4 border-[#2563eb] pl-4">
+          <h1 className="text-4xl font-bold text-foreground mb-4 border-l-4 border-[var(--accent)] pl-4">
             Achievements
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl">
+          <p className="text-muted-foreground text-lg max-w-2xl">
             A reflection of my dedication, hard work, and passion for excellence.
           </p>
         </div>
@@ -55,26 +55,26 @@ export default function Achievements() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-[#1a1a1a] border border-[#262626] rounded-xl p-8 hover:border-[#2563eb] transition-all duration-300 relative overflow-hidden group"
+              className="bg-muted border border-border rounded-xl p-8 hover:border-[var(--accent)] transition-all duration-300 relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Award className="w-24 h-24 text-[#2563eb]" />
+                <Award className="w-24 h-24 text-[var(--accent)]" />
               </div>
               
-              <h3 className="text-2xl font-bold text-white mb-4 relative z-10">{achievement.title}</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-4 relative z-10">{achievement.title}</h3>
               
-              <div className="flex flex-col gap-2 mb-6 text-sm text-gray-400 relative z-10">
+              <div className="flex flex-col gap-2 mb-6 text-sm text-muted-foreground relative z-10">
                 <div className="flex items-center gap-2">
-                   <Briefcase className="w-4 h-4 text-[#2563eb]" />
+                   <Briefcase className="w-4 h-4 text-[var(--accent)]" />
                    <span>{achievement.organization}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                   <Calendar className="w-4 h-4 text-[#2563eb]" />
+                   <Calendar className="w-4 h-4 text-[var(--accent)]" />
                    <span>{achievement.date}</span>
                 </div>
               </div>
 
-              <p className="text-gray-300 leading-relaxed relative z-10">
+              <p className="text-muted-foreground leading-relaxed relative z-10">
                 {achievement.description}
               </p>
             </motion.div>

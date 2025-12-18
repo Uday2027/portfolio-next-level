@@ -2,10 +2,12 @@
 "use client";
 
 import TypewriterText from "@/components/TypewriterText";
+import SpotlightCard from "@/components/SpotlightCard";
 import Link from "next/link";
-import { ArrowRight, Download, Mail, Phone, MapPin, Github, Linkedin, Loader2, GraduationCap, Briefcase, Code2, ChevronDown, User, Hash } from "lucide-react";
+import { ArrowRight, Download, Mail, Phone, MapPin, Github, Linkedin, Loader2, GraduationCap, Briefcase, Code2, ChevronDown, User, Hash, ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { motion, useScroll, useSpring } from "framer-motion";
 
 interface Education {
   institution: string;
@@ -45,6 +47,13 @@ export default function Home() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState("hero");
+
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
   useEffect(() => {
     // Cache busting with timestamp
@@ -101,24 +110,48 @@ export default function Home() {
 
   if (!profile) return null;
 
-  // Group skills by category
   const skillsByCategory = (profile.skills || []).reduce((acc, skill) => {
       if (!acc[skill.category]) acc[skill.category] = [];
       acc[skill.category].push(skill.name);
       return acc;
   }, {} as Record<string, string[]>);
 
-  const categories = ["Frontend", "Backend", "DevOps", "Tools", "Other"];
+  const categories = ["Languages", "Frontend", "Backend", "Databases", "DevOps", "Tools", "Other"];
 
   const scrollTo = (id: string) => {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const fadeInUp = {
+    initial: { opacity: 0, y: 60 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6, ease: "easeOut" }
+  };
+
+  const stagger = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center min-h-screen relative">
+    <div className="flex flex-col items-center min-h-screen relative bg-background selection:bg-[var(--accent)] selection:text-white overflow-hidden">
       
+      {/* Scroll Progress Bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-[var(--accent)] origin-left z-[100]"
+        style={{ scaleX }}
+      />
+
       {/* Page Overview Sidebar (Left) */}
-      <div className="hidden xl:flex fixed left-12 top-1/2 -translate-y-1/2 z-50 flex-col gap-6">
+      <motion.div 
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 1, duration: 0.8 }}
+        className="flex fixed left-2 xl:left-8 top-1/2 -translate-y-1/2 z-40 flex-col gap-4 xl:gap-6 pointer-events-auto"
+      >
          {[
              { id: "hero", label: "Intro", icon: User },
              { id: "experience", label: "Experience", icon: Briefcase },
@@ -128,116 +161,179 @@ export default function Home() {
              <button 
                 key={item.id}
                 onClick={() => scrollTo(item.id)}
-                className={cn(
-                    "group flex items-center gap-3 transition-all duration-300",
-                    activeSection === item.id ? "text-[#2563eb] translate-x-2" : "text-gray-500 hover:text-gray-300"
-                )}
+                className="group relative flex items-center justify-center w-10 h-10 xl:w-12 xl:h-12"
              >
                  <div className={cn(
-                     "w-10 h-10 rounded-full flex items-center justify-center border transition-all duration-300",
-                     activeSection === item.id ? "border-[#2563eb] bg-[#2563eb]/10" : "border-gray-800 bg-[#0a0a0a] group-hover:border-gray-600"
-                 )}>
-                     <item.icon className="w-4 h-4" />
-                 </div>
-                 <span className={cn(
-                     "text-sm font-medium tracking-wide opacity-0 -translate-x-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none",
-                     activeSection === item.id && "opacity-100 translate-x-0"
-                 )}>
+                     "absolute inset-0 rounded-full border border-gray-800 bg-[#0a0a0a] transition-all duration-300",
+                     activeSection === item.id ? "scale-100 border-[var(--accent)] shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)]" : "scale-75 group-hover:scale-90 group-hover:border-gray-600"
+                 )} />
+                 <item.icon className={cn(
+                     "w-3 h-3 xl:w-4 xl:h-4 relative z-10 transition-colors duration-300",
+                     activeSection === item.id ? "text-[var(--accent)]" : "text-gray-500 group-hover:text-gray-300"
+                 )} />
+                 
+                 {/* Label Tooltip - Hidden on mobile, visible on XML */}
+                 <span className="hidden xl:block absolute left-14 px-3 py-1 rounded bg-muted border border-[#333] text-xs font-semibold tracking-wide text-gray-300 opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 whitespace-nowrap z-50 pointer-events-none">
                      {item.label}
                  </span>
              </button>
          ))}
-         <div className="absolute left-[19px] top-4 bottom-4 w-[1px] bg-gray-800 -z-10" />
-      </div>
+         <div className="absolute left-[1.25rem] xl:left-6 top-6 bottom-6 w-[1px] bg-gradient-to-b from-transparent via-gray-800 to-transparent -z-10" />
+      </motion.div>
 
       {/* Hero Section */}
-      <section id="hero" className="relative flex flex-col items-center justify-center min-h-[calc(100vh-64px)] px-4 sm:px-6 lg:px-8 w-full">
-        <div className="text-center space-y-8 max-w-4xl mx-auto">
-            <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl text-[#2563eb] font-semibold tracking-wide uppercase">
-                Portfolio
-            </h2>
-            <TypewriterText
-                text={profile.name}
-                className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white mb-4"
-            />
-            <p className="text-xl sm:text-2xl text-gray-400 font-light max-w-2xl mx-auto">
-                {profile.title}
-            </p>
-            <div className="flex items-center justify-center gap-2 text-gray-500 mt-2">
-                <MapPin className="w-5 h-5 text-[#2563eb]" />
-                <span className="text-lg">{profile.university}</span>
-            </div>
-            </div>
+      <section id="hero" className="relative flex flex-col items-center justify-center min-h-[calc(100vh-64px)] pl-16 pr-4 sm:px-6 lg:px-8 w-full">
+         {/* Background Elements - Minimal Tech Vibe */}
+         <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl" />
+         </div>
 
-            <p className="text-gray-300 text-lg max-w-xl mx-auto leading-relaxed">
-                {profile.bio}
-            </p>
+        <motion.div 
+            initial="initial"
+            animate="animate"
+            variants={stagger}
+            className="text-left space-y-8 max-w-5xl mx-auto relative z-10 pb-16 w-full pt-4 sm:pt-0"
+        >
+            <motion.div variants={fadeInUp} className="space-y-6">
+                <div className="inline-block px-4 py-1.5 rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/5 text-[var(--accent)] text-sm font-semibold tracking-wider uppercase backdrop-blur-sm">
+                    Open to Work
+                </div>
+                
+                <div className="relative block w-full">
+                    <TypewriterText
+                        text={profile.name}
+                        className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter text-foreground break-words justify-start"
+                    />
+                    {/* Decorative Circuit Lines - Simulated with borders */}
+                    <div className="hidden lg:block absolute -right-12 top-1/2 w-8 h-[1px] bg-[#333]" />
+                    <div className="hidden lg:block absolute -right-12 top-1/2 h-16 w-[1px] bg-[#333]" />
+                </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-            <Link
-                href="/projects"
-                className="btn-primary"
-            >
-                View Projects <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
-            <Link
-                href="/contact"
-                className="btn-secondary"
-            >
-                Contact Me <Mail className="ml-2 w-5 h-5" />
-            </Link>
-            <div className="flex gap-4 items-center justify-center sm:ml-4">
-                    {profile.linkedin && <Link href={profile.linkedin} target="_blank" className="social-icon"><Linkedin className="w-6 h-6" /></Link>}
-                    {profile.github && <Link href={profile.github} target="_blank" className="social-icon"><Github className="w-6 h-6" /></Link>}
-            </div>
-            </div>
-        </div>
+                <p className="text-xl sm:text-2xl md:text-3xl text-gray-400 font-light max-w-3xl leading-normal">
+                    <span className="text-foreground font-normal">{profile.title}</span> 
+                </p>
+{/*                 
+                <div className="flex items-center justify-start gap-3 text-gray-500 font-mono text-sm sm:text-base">
+                    <MapPin className="w-4 h-4 text-[var(--accent)]" />
+                    <span>{profile.university}</span>
+                </div> */}
+            </motion.div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-6 flex flex-col items-center gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: '1s', animationFillMode: 'forwards' }}>
-            <div className="flex gap-3 text-sm text-gray-500 font-mono tracking-wide">
+            {profile.bio && profile.bio.trim() !== '""' && profile.bio.trim() !== '' && (
+                <motion.p variants={fadeInUp} className="text-gray-400 text-lg sm:text-xl max-w-2xl leading-relaxed border-l-2 border-[var(--accent)] pl-6 text-left italic bg-muted/30 p-4 rounded-r-lg backdrop-blur-sm">
+                    "{profile.bio}"
+                </motion.p>
+            )}
+
+            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-5 justify-start mt-12 text-sm sm:text-base">
+                <Link
+                    href="/projects"
+                    className="group relative px-6 py-4 bg-[var(--accent)] text-foreground font-bold rounded-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)] w-fit"
+                >
+                    <span className="relative z-10 flex items-center gap-2 justify-center">View Projects <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
+                    <div className="absolute inset-0 bg-white/20 translate-y-full skew-y-12 group-hover:translate-y-0 transition-transform duration-500" />
+                </Link>
+                <Link
+                    href="/contact"
+                    className="group px-6 py-4 bg-transparent border border-[#333] text-foreground font-bold rounded-lg hover:bg-muted hover:border-[var(--accent)] transition-all flex items-center gap-2 justify-center w-fit"
+                >
+                    Contact Me <Mail className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                </Link>
+            </motion.div>
+            
+            <motion.div variants={fadeInUp} className="flex gap-6 items-center justify-start pt-1 mb-16 sm:mb-0">
+                    {profile.linkedin && (
+                        <Link href={profile.linkedin} target="_blank" className="p-3 rounded-full bg-muted border border-[#333] text-gray-400 hover:text-[#0a66c2] hover:border-[#0a66c2] hover:-translate-y-1 transition-all duration-300">
+                            <Linkedin className="w-6 h-6" />
+                        </Link>
+                    )}
+                    {profile.github && (
+                        <Link href={profile.github} target="_blank" className="p-3 rounded-full bg-muted border border-[#333] text-gray-400 hover:text-foreground hover:border-white hover:-translate-y-1 transition-all duration-300">
+                            <Github className="w-6 h-6" />
+                        </Link>
+                    )}
+            </motion.div>
+        </motion.div>
+
+        {/* Enhanced Scroll Indicator */}
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 1 }}
+            className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-4 z-20 pointer-events-none md:pointer-events-auto"
+        >
+            <div className="hidden sm:flex gap-4 text-xs font-mono text-gray-500 uppercase tracking-[0.2em] border-t border-b border-[#333] py-2 px-8 bg-[#0a0a0a]/80 backdrop-blur rounded-full">
                 <span>Experience</span>
-                <span className="text-[#2563eb]">•</span>
+                <span className="text-[var(--accent)]">•</span>
+                <span>Scroll</span>
+                <span className="text-[var(--accent)]">•</span>
                 <span>Skills</span>
-                <span className="text-[#2563eb]">•</span>
-                <span>Education</span>
             </div>
-            <button onClick={() => scrollTo("experience")} className="animate-bounce mt-2 text-[#2563eb] hover:text-blue-400 transition-colors cursor-pointer">
-                <ChevronDown className="w-6 h-6" />
+            {/* Mobile simplified scroll text */}
+            <div className="sm:hidden text-[10px] font-mono text-gray-600 uppercase tracking-widest mb-1">
+                Scroll
+            </div>
+            <button onClick={() => scrollTo("experience")} className="animate-bounce cursor-pointer p-2 rounded-full hover:bg-muted transition-colors pointer-events-auto big-hit-area">
+                <ChevronDown className="w-6 h-6 text-[var(--accent)]" />
             </button>
-        </div>
+        </motion.div>
       </section>
-
-      <style jsx>{`
-        @keyframes fade-in-up {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-            animation: fade-in-up 0.8s ease-out;
-        }
-      `}</style>
 
       {/* Experience Section */}
       {profile.experience?.length > 0 && (
-          <section id="experience" className="w-full py-24 px-4 sm:px-6 bg-[#0a0a0a] border-t border-[#262626]">
-              <div className="max-w-5xl mx-auto">
-                  <h2 className="section-title"><Briefcase className="w-8 h-8 text-[#2563eb]" /> Experience</h2>
-                  <div className="space-y-8 mt-12 border-l-2 border-[#262626] pl-8 ml-4">
+          <section id="experience" className="w-full py-12 md:py-24 px-4 sm:px-6 relative">
+              <div className="max-w-6xl mx-auto pl-12 sm:pl-0">
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    className="flex items-center gap-4 mb-12 md:mb-16"
+                  >
+                      <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
+                          <Briefcase className="w-8 h-8 text-[var(--accent)]" />
+                      </div>
+                      <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Professional <span className="text-[var(--accent)]">Exp.</span></h2>
+                  </motion.div>
+
+                  <div className="relative space-y-12 md:space-y-16 pl-6 md:pl-0">
+                      {/* Central Line for Desktop */}
+                      <div className="hidden md:block absolute left-1/2 top-4 bottom-0 w-[1px] bg-[#262626] -translate-x-1/2" />
+                      {/* Left Line for Mobile */}
+                      <div className="md:hidden absolute left-0 top-4 bottom-0 w-[1px] bg-[#262626]" />
+
                       {profile.experience.map((exp, idx) => (
-                          <div key={idx} className="relative group">
-                              <div className="absolute -left-[45px] top-1 w-6 h-6 rounded-full bg-[#1a1a1a] border-4 border-[#2563eb] group-hover:scale-125 transition-transform duration-300" />
-                              <div className="bg-[#1a1a1a] p-6 rounded-2xl border border-[#262626] hover:border-[#2563eb] transition-all duration-300 hover:shadow-2xl hover:shadow-blue-900/10">
-                                <h3 className="text-2xl font-bold text-white mb-1">{exp.role}</h3>
-                                <div className="flex flex-wrap gap-2 items-center mb-4">
-                                     <span className="text-[#2563eb] font-semibold text-lg">{exp.company}</span>
-                                     <span className="text-gray-600">•</span>
-                                     <span className="text-gray-400 text-sm font-mono">{exp.duration}</span>
-                                </div>
-                                <p className="text-gray-400 leading-relaxed whitespace-pre-wrap">{exp.description}</p>
+                          <motion.div 
+                            key={idx}
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{ duration: 0.5, delay: idx * 0.1 }}
+                            className={cn(
+                                "relative md:flex items-center gap-12 group",
+                                idx % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                            )}
+                          >
+                              {/* Connector Dot */}
+                              <div className="absolute left-[-1.5rem] md:left-1/2 top-0 md:top-1/2 w-4 h-4 rounded-full bg-[#0a0a0a] border-4 border-[var(--accent)] -translate-x-1/2 md:-translate-y-1/2 z-10 group-hover:scale-150 transition-transform duration-300 shadow-[0_0_10px_var(--accent)] mt-1 md:mt-0" />
+
+                              {/* Content Card */}
+                              <div className="md:w-1/2">
+                                  <SpotlightCard className="p-6 md:p-8 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)] group-hover:-translate-y-2 border-0 bg-muted">
+                                      <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2">
+                                          <h3 className="text-xl md:text-2xl font-bold text-foreground">{exp.role}</h3>
+                                          <span className="text-xs font-mono text-[var(--accent)] bg-[var(--accent)]/10 px-3 py-1 rounded-full border border-[var(--accent)]/20 whitespace-nowrap">{exp.duration}</span>
+                                      </div>
+                                      <div className="text-base md:text-lg text-muted-foreground font-medium mb-4 flex items-center gap-2">
+                                          <span className="w-2 h-2 bg-[var(--accent)] rounded-full" />
+                                          {exp.company}
+                                      </div>
+                                      <p className="text-gray-400 leading-relaxed whitespace-pre-wrap text-sm">{exp.description}</p>
+                                  </SpotlightCard>
                               </div>
-                          </div>
+                              <div className="md:w-1/2" /> {/* Spacer for alternating layout */}
+                          </motion.div>
                       ))}
                   </div>
               </div>
@@ -246,26 +342,48 @@ export default function Home() {
 
        {/* Skills Section */}
        {profile.skills?.length > 0 && (
-          <section id="skills" className="w-full py-24 px-4 sm:px-6 bg-[#050505] border-t border-[#262626]">
-              <div className="max-w-5xl mx-auto">
-                  <h2 className="section-title"><Code2 className="w-8 h-8 text-[#2563eb]" /> Technical Skills</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-                      {categories.map((cat) => {
+          <section id="skills" className="w-full py-12 md:py-24 px-4 sm:px-6 bg-background border-t border-border">
+              <div className="max-w-6xl mx-auto pl-12 sm:pl-0">
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    className="flex items-center gap-4 mb-12 md:mb-16"
+                  >
+                      <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
+                          <Code2 className="w-8 h-8 text-[var(--accent)]" />
+                      </div>
+                      <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Technical <span className="text-[var(--accent)]">Arsenhal</span></h2>
+                  </motion.div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {categories.map((cat, catIdx) => {
                           const skills = skillsByCategory[cat];
                           if (!skills || skills.length === 0) return null;
+                          
                           return (
-                              <div key={cat} className="group bg-[#1a1a1a]/50 p-8 rounded-[2rem] border border-[#262626] hover:border-[#2563eb]/50 transition-all duration-300 hover:bg-[#1a1a1a]">
-                                  <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-                                      <span className="w-2 h-8 rounded-full bg-[#2563eb]"></span> {cat}
+                              <motion.div 
+                                key={cat}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: catIdx * 0.1 }}
+                                className="group relative bg-muted p-6 md:p-8 rounded-[2rem] border border-border hover:border-[var(--accent)] transition-all duration-300 hover:shadow-2xl overflow-hidden"
+                              >
+                                  {/* Hover Glow Effect */}
+                                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                                  
+                                  <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-3 relative z-10">
+                                      <Hash className="w-5 h-5 text-[var(--accent)]" /> {cat}
                                   </h3>
-                                  <div className="flex flex-wrap gap-3">
+                                  <div className="flex flex-wrap gap-2 relative z-10">
                                       {skills.map((skill, i) => (
-                                          <span key={i} className="px-4 py-2 bg-[#050505] text-gray-300 rounded-full text-sm font-medium border border-[#333] group-hover:border-[#2563eb]/30 group-hover:text-white transition-all duration-300 hover:scale-105 hover:bg-[#2563eb] hover:border-[#2563eb] cursor-default shadow-lg shadow-black/50">
+                                          <div key={i} className="px-3 py-1.5 bg-muted text-muted-foreground rounded-lg text-sm font-medium border border-border transition-all duration-300 group-hover:border-[var(--accent)]/30 group-hover:text-foreground hover:!bg-[var(--accent)] hover:!border-[var(--accent)] cursor-default">
                                               {skill}
-                                          </span>
+                                          </div>
                                       ))}
                                   </div>
-                              </div>
+                              </motion.div>
                           )
                       })}
                   </div>
@@ -275,16 +393,29 @@ export default function Home() {
 
       {/* Education Section */}
       {profile.education?.length > 0 && (
-          <section id="education" className="w-full py-24 px-4 sm:px-6 bg-[#0a0a0a] border-t border-[#262626]">
-              <div className="max-w-5xl mx-auto">
-                  <h2 className="section-title"><GraduationCap className="w-8 h-8 text-[#2563eb]" /> Education</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+          <section id="education" className="w-full py-12 md:py-24 px-4 sm:px-6 relative overflow-hidden">
+               {/* Background Decoration */}
+               <div className="absolute top-1/2 right-0 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl -translate-y-1/2 pointer-events-none" />
+
+              <div className="max-w-6xl mx-auto relative z-10 pl-12 sm:pl-0">
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    className="flex items-center gap-4 mb-12 md:mb-16"
+                  >
+                      <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
+                          <GraduationCap className="w-8 h-8 text-[var(--accent)]" />
+                      </div>
+                      <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Academic <span className="text-[var(--accent)]">Journey</span></h2>
+                  </motion.div>
+
+                  <div className="grid grid-cols-1 gap-6">
                       {profile.education.map((edu, idx) => {
                           // Logic for Present
                           let endDisplay = edu.endDate;
                           const entDateObj = new Date(edu.endDate);
                           const now = new Date();
-                          // If valid date and in future, or explicitly "Present"
                           if (!isNaN(entDateObj.getTime()) && entDateObj > now) {
                               endDisplay = "Present";
                           } else if (edu.endDate.toLowerCase() === 'present') {
@@ -292,18 +423,32 @@ export default function Home() {
                           }
 
                           return (
-                            <div key={idx} className="bg-[#1a1a1a] p-8 rounded-2xl border border-[#262626] hover:border-[#2563eb] transition-all group duration-300 hover:shadow-2xl hover:shadow-blue-900/10">
-                                <div className="flex justify-between items-start mb-4">
-                                     <div className="p-3 bg-[#2563eb]/10 rounded-xl text-[#2563eb] group-hover:bg-[#2563eb] group-hover:text-white transition-colors duration-300">
-                                         <GraduationCap className="w-8 h-8" />
-                                     </div>
-                                     <span className="px-3 py-1 rounded-full bg-[#262626] text-xs font-mono text-gray-400 border border-[#333]">
-                                         {edu.startDate} - {endDisplay}
-                                     </span>
+                            <motion.div 
+                                key={idx}
+                                initial={{ opacity: 0, x: -50 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: idx * 0.1 }}
+                                className="group relative bg-muted p-6 md:p-10 rounded-2xl border border-border hover:border-[var(--accent)] transition-all duration-500 overflow-hidden"
+                            >
+                                <div className="absolute right-0 top-0 h-full w-2 bg-[var(--accent)] scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top" />
+                                
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                    <div className="space-y-2">
+                                        <h3 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-[var(--accent)] transition-colors">{edu.institution}</h3>
+                                        <div className="flex items-center gap-3 text-lg md:text-xl text-muted-foreground">
+                                            <GraduationCap className="w-5 h-5 text-muted-foreground" />
+                                            {edu.degree}
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3 bg-muted px-6 py-3 rounded-full border border-border group-hover:border-[var(--accent)]/30 transition-colors w-fit">
+                                        <span className="text-[var(--accent)] font-bold whitespace-nowrap">{edu.startDate}</span>
+                                        <ArrowRight className="w-4 h-4 text-muted-foreground" />
+
+                                        <span className="text-foreground font-bold whitespace-nowrap">{endDisplay}</span>
+                                    </div>
                                 </div>
-                                <h3 className="text-2xl font-bold text-white group-hover:text-[#2563eb] transition-colors">{edu.institution}</h3>
-                                <p className="text-lg text-gray-300 mt-2">{edu.degree}</p>
-                            </div>
+                            </motion.div>
                           );
                       })}
                   </div>
@@ -316,51 +461,9 @@ export default function Home() {
         html {
             scroll-behavior: smooth;
         }
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 2rem;
-            border-radius: 0.375rem;
-            background-color: #2563eb;
+        ::selection {
+            background-color: var(--accent);
             color: white;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        .btn-primary:hover {
-            background-color: #1d4ed8;
-            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
-        }
-        .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 2rem;
-            border-radius: 0.375rem;
-            background-color: #1a1a1a;
-            color: #d1d5db;
-            border: 1px solid #262626;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        .btn-secondary:hover {
-            background-color: #262626;
-            color: white;
-        }
-        .social-icon {
-            color: #9ca3af;
-            transition: color 0.2s;
-        }
-        .social-icon:hover {
-            color: white;
-        }
-        .section-title {
-            font-size: 2.25rem;
-            font-weight: 700;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
         }
       `}</style>
     </div>

@@ -2,6 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface TypewriterTextProps {
   text: string;
@@ -9,17 +10,31 @@ interface TypewriterTextProps {
 }
 
 export default function TypewriterText({ text, className }: TypewriterTextProps) {
-  const letters = Array.from(text);
+  const words = text.split(" ");
 
   const container = {
     hidden: { opacity: 0 },
     visible: (i = 1) => ({
       opacity: 1,
-      transition: { staggerChildren: 0.05, delayChildren: 0.04 * i },
+      transition: { staggerChildren: 0.12, delayChildren: 0.04 * i },
     }),
   };
 
-  const child = {
+  const wordVariant = {
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        staggerChildren: 0.05,
+      }
+    },
+    hidden: {
+      opacity: 0,
+      y: 20,
+    }
+  };
+
+  const letterVariant = {
     visible: {
       opacity: 1,
       y: 0,
@@ -42,16 +57,24 @@ export default function TypewriterText({ text, className }: TypewriterTextProps)
 
   return (
     <motion.div
-      style={{ overflow: "hidden", display: "flex", flexWrap: "wrap", justifyContent: "center" }} // Added flex wrap for handling long text
+      style={{ overflow: "hidden", display: "flex", flexWrap: "wrap", gap: "1rem" }}
       variants={container}
       initial="hidden"
       animate="visible"
-      className={className}
+      className={cn("justify-center", className)}
     >
-      {letters.map((letter, index) => (
-        <motion.span variants={child} key={index}>
-          {letter === " " ? "\u00A0" : letter}
-        </motion.span>
+      {words.map((word, index) => (
+        <motion.div 
+          key={index} 
+          variants={wordVariant}
+          style={{ display: "flex", whiteSpace: "nowrap" }}
+        >
+          {Array.from(word).map((letter, i) => (
+            <motion.span variants={letterVariant} key={i}>
+              {letter}
+            </motion.span>
+          ))}
+        </motion.div>
       ))}
     </motion.div>
   );

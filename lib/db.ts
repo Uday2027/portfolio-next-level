@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = "mongodb://localhost:27017/portfolio";
 
 // Cached connection state
 interface MongooseCache {
@@ -38,6 +38,7 @@ async function dbConnect() {
     };
 
     cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
+      console.log("MongoDB Connected Successfully");
       return mongoose;
     });
   }
