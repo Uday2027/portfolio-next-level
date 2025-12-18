@@ -9,6 +9,7 @@ export async function GET() {
     await dbConnect();
     const profile = await Profile.findOne().sort({ createdAt: -1 });
     return NextResponse.json({ success: true, data: profile });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("GET Profile Error:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
@@ -41,6 +42,7 @@ export async function PUT(request: Request) {
     }
 
     return NextResponse.json({ success: true, data: profile });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("PUT Profile Error:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

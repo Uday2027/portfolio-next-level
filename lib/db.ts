@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
+// MONGODB_URI logging removed for security
+
 // Cached connection state
 interface MongooseCache {
   conn: typeof mongoose | null;
@@ -28,7 +30,7 @@ async function dbConnect() {
 
   if (!MONGODB_URI) {
     throw new Error(
-      'Please define the MONGODB_URI environment variable inside .env.local'
+      'Please define the MONGODB_URI environment variable. Visit your deployment platform settings (e.g., Vercel Dashboard -> Environment Variables) to set it.'
     );
   }
 

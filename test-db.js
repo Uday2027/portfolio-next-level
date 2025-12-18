@@ -1,5 +1,6 @@
 
-import { connect, connection, disconnect } from 'mongoose';
+import mongoose from 'mongoose';
+const { connect, connection, disconnect } = mongoose;
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/portfolio";
 

@@ -1,7 +1,6 @@
 
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
 
 const SECRET_KEY = process.env.JWT_SECRET || "default_secret_key_change_me_in_prod";
 const key = new TextEncoder().encode(SECRET_KEY);
@@ -18,6 +17,7 @@ export async function verifyToken(token: string) {
   try {
     const { payload } = await jwtVerify(token, key, { algorithms: ["HS256"] });
     return payload;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return null;
   }
