@@ -4,7 +4,7 @@
 import TypewriterText from "@/components/TypewriterText";
 import SpotlightCard from "@/components/SpotlightCard";
 import Link from "next/link";
-import { ArrowRight, Mail, Github, Linkedin, Loader2, GraduationCap, Briefcase, Code2, ChevronDown, User, Hash, ExternalLink } from "lucide-react";
+import { ArrowRight, Mail, Github, Linkedin, Loader2, GraduationCap, Briefcase, Code2, ChevronDown, User, Hash, ExternalLink, Code, Award, Calendar, Phone, MapPin, Send, CheckCircle, AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { motion, useScroll, useSpring } from "framer-motion";
@@ -28,6 +28,23 @@ interface Skill {
   category: string;
 }
 
+interface Project {
+  _id: string;
+  title: string;
+  description: string;
+  technologies: string[];
+  liveLink: string;
+  githubLink: string;
+}
+
+interface Achievement {
+  _id: string;
+  title: string;
+  description: string;
+  date: string;
+  organization: string;
+}
+
 interface Profile {
   name: string;
   title: string;
@@ -45,8 +62,18 @@ interface Profile {
 
 export default function Home() {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState("hero");
+  const [contactStatus, setContactStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    message: "",
+  });
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -87,9 +114,29 @@ export default function Home() {
           setLoading(false);
       });
 
+    // Fetch projects
+    fetch("/api/projects")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setProjects(data.data);
+        }
+      })
+      .catch((err) => console.error(err));
+
+    // Fetch achievements
+    fetch("/api/achievements")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setAchievements(data.data);
+        }
+      })
+      .catch((err) => console.error(err));
+
     // Scroll spy
     const handleScroll = () => {
-        const sections = ["hero", "experience", "skills", "education"];
+        const sections = ["hero", "experience", "skills", "education", "projects", "achievements", "contact"];
         for (const section of sections) {
             const el = document.getElementById(section);
             if (el) {
@@ -121,6 +168,42 @@ export default function Home() {
 
   const scrollTo = (id: string) => {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactStatus("loading");
+    setErrorMessage("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setContactStatus("success");
+        setFormData({ name: "", email: "", mobile: "", message: "" });
+      } else {
+        setContactStatus("error");
+        setErrorMessage(data.error || "Something went wrong.");
+      }
+    } catch (error) {
+      setContactStatus("error");
+      setErrorMessage("Failed to send message. Please try again.");
+    }
   };
 
   const fadeInUp = {
@@ -158,6 +241,9 @@ export default function Home() {
              { id: "experience", label: "Experience", icon: Briefcase },
              { id: "skills", label: "Skills", icon: Code2 },
              { id: "education", label: "Education", icon: GraduationCap },
+             { id: "projects", label: "Projects", icon: Code },
+             { id: "achievements", label: "Achievements", icon: Award },
+             { id: "contact", label: "Contact", icon: Mail },
          ].map((item) => (
              <button 
                 key={item.id}
@@ -456,6 +542,346 @@ export default function Home() {
               </div>
           </section>
       )}
+
+      {/* Projects Section */}
+      {projects.length > 0 && (
+        <section id="projects" className="w-full py-12 md:py-24 px-4 sm:px-6 bg-background border-t border-border">
+          <div className="max-w-6xl mx-auto pl-12 sm:pl-0">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex items-center gap-4 mb-12 md:mb-16"
+            >
+              <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
+                <Code className="w-8 h-8 text-[var(--accent)]" />
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Notable <span className="text-[var(--accent)]">Projects</span></h2>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projects.slice(0, 6).map((project, idx) => (
+                <motion.div
+                  key={project._id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="group relative bg-muted border border-border rounded-xl overflow-hidden hover:border-[var(--accent)] transition-all duration-300 flex flex-col"
+                >
+                  <div className="p-6 flex-grow">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="p-2 bg-background rounded-md border border-border group-hover:border-[var(--accent)] transition-colors">
+                        <Code2 className="w-6 h-6 text-[var(--accent)]" />
+                      </div>
+                      <div className="flex gap-2">
+                        {project.githubLink && (
+                          <Link
+                            href={project.githubLink}
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            target="_blank"
+                          >
+                            <Github className="w-5 h-5" />
+                          </Link>
+                        )}
+                        {project.liveLink && (
+                          <Link
+                            href={project.liveLink}
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            target="_blank"
+                          >
+                            <ExternalLink className="w-5 h-5" />
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-[var(--accent)] transition-colors">
+                      {project.title}
+                    </h3>
+                    <p className="text-muted-foreground mb-6 line-clamp-3">
+                      {project.description}
+                    </p>
+                  </div>
+
+                  <div className="px-6 py-4 border-t border-border bg-background/50">
+                    <div className="flex flex-wrap gap-2">
+                      {project.technologies.map((t, i) => (
+                        <span
+                          key={i}
+                          className="text-xs font-medium px-2 py-1 rounded bg-muted text-muted-foreground border border-border"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="mt-12 text-center"
+            >
+              <Link 
+                href="/projects"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border border-[#333] text-foreground font-bold rounded-lg hover:bg-muted hover:border-[var(--accent)] transition-all"
+              >
+                View All Projects <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+      )}
+
+      {/* Achievements Section */}
+      {achievements.length > 0 && (
+        <section id="achievements" className="w-full py-12 md:py-24 px-4 sm:px-6 relative overflow-hidden">
+          <div className="absolute top-1/2 left-0 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl -translate-y-1/2 pointer-events-none" />
+
+          <div className="max-w-6xl mx-auto relative z-10 pl-12 sm:pl-0">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex items-center gap-4 mb-12 md:mb-16"
+            >
+              <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
+                <Award className="w-8 h-8 text-[var(--accent)]" />
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Key <span className="text-[var(--accent)]">Achievements</span></h2>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {achievements.slice(0, 4).map((achievement, idx) => (
+                <motion.div
+                  key={achievement._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="bg-muted border border-border rounded-xl p-8 hover:border-[var(--accent)] transition-all duration-300 relative overflow-hidden group"
+                >
+                  <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <Award className="w-24 h-24 text-[var(--accent)]" />
+                  </div>
+                  
+                  <h3 className="text-2xl font-bold text-foreground mb-4 relative z-10">{achievement.title}</h3>
+                  
+                  <div className="flex flex-col gap-2 mb-6 text-sm text-muted-foreground relative z-10">
+                    <div className="flex items-center gap-2">
+                      <Briefcase className="w-4 h-4 text-[var(--accent)]" />
+                      <span>{achievement.organization}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-[var(--accent)]" />
+                      <span>{achievement.date}</span>
+                    </div>
+                  </div>
+
+                  <p className="text-muted-foreground leading-relaxed relative z-10">
+                    {achievement.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="mt-12 text-center"
+            >
+              <Link 
+                href="/achievements"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border border-[#333] text-foreground font-bold rounded-lg hover:bg-muted hover:border-[var(--accent)] transition-all"
+              >
+                View All Achievements <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+      )}
+
+      {/* Contact Section */}
+      <section id="contact" className="w-full py-12 md:py-24 px-4 sm:px-6 bg-background border-t border-border">
+        <div className="max-w-6xl mx-auto pl-12 sm:pl-0">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="flex items-center gap-4 mb-12 md:mb-16"
+          >
+            <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
+              <Mail className="w-8 h-8 text-[var(--accent)]" />
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Get in <span className="text-[var(--accent)]">Touch</span></h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Contact Info */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <p className="text-muted-foreground text-lg mb-8">
+                Have a project in mind or want to discuss potential opportunities? 
+                I&apos;m currently available for freelance work and open to new challenges.
+              </p>
+
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 bg-muted p-3 rounded-lg border border-border">
+                    <Mail className="w-6 h-6 text-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium text-foreground">Email</h3>
+                    <a href={`mailto:${profile.email}`} className="text-muted-foreground hover:text-[var(--accent)] transition-colors">
+                      {profile.email}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 bg-muted p-3 rounded-lg border border-border">
+                    <Phone className="w-6 h-6 text-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium text-foreground">Phone</h3>
+                    <a href={`tel:${profile.phone}`} className="text-muted-foreground hover:text-[var(--accent)] transition-colors">
+                      {profile.phone}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 bg-muted p-3 rounded-lg border border-border">
+                    <MapPin className="w-6 h-6 text-[var(--accent)]" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium text-foreground">Location</h3>
+                    <p className="text-muted-foreground">
+                      {profile.location}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Contact Form */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="bg-muted p-8 rounded-xl border border-border"
+            >
+              <h3 className="text-2xl font-bold text-foreground mb-6">Send Message</h3>
+              
+              <form onSubmit={handleContactSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-muted-foreground mb-2">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleFormChange}
+                      required
+                      className="w-full bg-background border border-border rounded-md px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-colors"
+                      placeholder="Your Name"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="mobile" className="block text-sm font-medium text-muted-foreground mb-2">
+                      Mobile Number
+                    </label>
+                    <input
+                      type="tel"
+                      id="mobile"
+                      name="mobile"
+                      value={formData.mobile}
+                      onChange={handleFormChange}
+                      className="w-full bg-background border border-border rounded-md px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-colors"
+                      placeholder="018..."
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleFormChange}
+                    required
+                    className="w-full bg-background border border-border rounded-md px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-colors"
+                    placeholder="john@example.com"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-muted-foreground mb-2">
+                    Message
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleFormChange}
+                    required
+                    rows={4}
+                    className="w-full bg-background border border-border rounded-md px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-colors"
+                    placeholder="Your message here..."
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={contactStatus === "loading"}
+                  className="w-full flex items-center justify-center space-x-2 bg-[var(--accent)] hover:opacity-90 text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {contactStatus === "loading" ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      <span>Send Message</span>
+                    </>
+                  )}
+                </button>
+
+                {contactStatus === "success" && (
+                  <div className="p-4 bg-green-900/20 border border-green-900 rounded-md flex items-center text-green-400">
+                    <CheckCircle className="w-5 h-5 mr-2" /> Message sent successfully!
+                  </div>
+                )}
+
+                {contactStatus === "error" && (
+                  <div className="p-4 bg-red-900/20 border border-red-900 rounded-md flex items-center text-red-400">
+                    <AlertCircle className="w-5 h-5 mr-2" /> {errorMessage}
+                  </div>
+                )}
+              </form>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* Global Styles for this page */}
       <style jsx global>{`
