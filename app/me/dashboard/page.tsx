@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { 
   User, Briefcase, Award, Loader2, Plus, Trash2, Edit2, Save, X, 
   AlertTriangle, GraduationCap, Code2, Globe, MapPin, Mail, Phone, 
-  Github, Linkedin, ChevronDown, ChevronUp, LayoutGrid 
+  Github, Linkedin, ChevronDown, ChevronUp, LayoutGrid, MessageSquare 
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/components/ThemeProvider";
@@ -62,6 +62,15 @@ interface Achievement {
   description: string;
   date: string;
   organization: string;
+}
+
+interface Message {
+  _id: string;
+  name: string;
+  email: string;
+  mobile?: string;
+  message: string;
+  createdAt: string;
 }
 
 // --- Reusable Components ---
@@ -505,10 +514,102 @@ function AchievementsTab() {
     );
 }
 
+function MessagesTab() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [expandedMessage, setExpandedMessage] = useState<string | null>(null);
+
+  const fetchMessages = () => fetch("/api/messages").then(r => r.json()).then(d => { if(d.success) setMessages(d.data); setLoading(false); });
+  useEffect(() => { fetchMessages() }, []);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  if (loading) return <div className="flex h-64 items-center justify-center"><Loader2 className="animate-spin w-8 h-8 text-[#2563eb]" /></div>;
+
+  return (
+    <div className="max-w-5xl mx-auto space-y-6">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-white">Contact Messages</h2>
+          <p className="text-gray-400 text-sm mt-1">{messages.length} total message{messages.length !== 1 ? 's' : ''}</p>
+        </div>
+      </div>
+
+      {messages.length === 0 ? (
+        <div className="card text-center py-12">
+          <MessageSquare className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+          <p className="text-gray-500 text-lg">No messages yet</p>
+          <p className="text-gray-600 text-sm mt-2">Messages from your contact form will appear here</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {messages.map(msg => (
+            <div 
+              key={msg._id} 
+              className="bg-[#1a1a1a] rounded-lg border border-[#262626] hover:border-[#2563eb] transition-all overflow-hidden"
+            >
+              <button
+                onClick={() => setExpandedMessage(expandedMessage === msg._id ? null : msg._id)}
+                className="w-full p-6 text-left flex items-start justify-between gap-4 hover:bg-[#1f1f1f] transition-colors"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-2">
+                    <MessageSquare className="w-5 h-5 text-[#2563eb] flex-shrink-0" />
+                    <h4 className="text-lg font-bold text-white truncate">{msg.name}</h4>
+                    <span className="text-xs text-gray-500 whitespace-nowrap">{formatDate(msg.createdAt)}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                    <div className="flex items-center gap-1.5 text-gray-400">
+                      <Mail className="w-3.5 h-3.5" />
+                      <span className="truncate">{msg.email}</span>
+                    </div>
+                    {msg.mobile && (
+                      <div className="flex items-center gap-1.5 text-gray-400">
+                        <Phone className="w-3.5 h-3.5" />
+                        <span>{msg.mobile}</span>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-gray-500 text-sm mt-2 line-clamp-1">
+                    {msg.message}
+                  </p>
+                </div>
+                <div className="flex-shrink-0">
+                  {expandedMessage === msg._id ? (
+                    <ChevronUp className="w-5 h-5 text-gray-500" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-500" />
+                  )}
+                </div>
+              </button>
+              
+              {expandedMessage === msg._id && (
+                <div className="px-6 pb-6 pt-2 border-t border-[#262626] bg-[#0f0f0f]">
+                  <h5 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Full Message</h5>
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">{msg.message}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // --- Main Layout ---
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState<"profile" | "projects" | "achievements">("profile");
+  const [activeTab, setActiveTab] = useState<"profile" | "projects" | "achievements" | "messages">("profile");
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-[#2563eb] selection:text-white">
@@ -598,6 +699,7 @@ export default function Dashboard() {
                         { id: "profile", label: "Profile", icon: User },
                         { id: "projects", label: "Projects", icon: Briefcase },
                         { id: "achievements", label: "Achievements", icon: Award },
+                        { id: "messages", label: "Messages", icon: MessageSquare },
                     ].map((tab) => (
                         <button
                             key={tab.id}
@@ -623,6 +725,7 @@ export default function Dashboard() {
             {activeTab === "profile" && <ProfileTab />}
             {activeTab === "projects" && <ProjectsTab />}
             {activeTab === "achievements" && <AchievementsTab />}
+            {activeTab === "messages" && <MessagesTab />}
         </div>
       </main>
     </div>
