@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -25,7 +24,10 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
-            <Link href="/" className="text-2xl font-bold text-foreground tracking-widest hover:text-[var(--accent)] transition-colors">
+            <Link
+              href="/"
+              className="text-2xl font-bold text-foreground tracking-widest hover:text-[var(--accent)] transition-colors"
+            >
               ZHU
             </Link>
           </div>
@@ -45,28 +47,36 @@ export default function Navbar() {
                   {item.name}
                 </Link>
               ))}
-              <button 
+              {/* <button
                 onClick={toggleTheme}
                 className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Toggle Theme"
               >
-                {themeMode === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
+                {themeMode === "dark" ? (
+                  <Sun className="w-5 h-5" />
+                ) : (
+                  <Moon className="w-5 h-5" />
+                )}
+              </button> */}
             </div>
           </div>
           <div className="-mr-2 flex md:hidden items-center gap-4">
-            <button 
+            {/* <button 
                 onClick={toggleTheme}
                 className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
             >
                 {themeMode === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
+            </button> */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted focus:outline-none"
             >
               <span className="sr-only">Open main menu</span>
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>

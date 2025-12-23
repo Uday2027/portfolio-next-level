@@ -1,10 +1,30 @@
-
 "use client";
 
 import TypewriterText from "@/components/TypewriterText";
 import SpotlightCard from "@/components/SpotlightCard";
 import Link from "next/link";
-import { ArrowRight, Mail, Github, Linkedin, Loader2, GraduationCap, Briefcase, Code2, ChevronDown, User, Hash, ExternalLink, Code, Award, Calendar, Phone, MapPin, Send, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  ArrowRight,
+  Mail,
+  Github,
+  Linkedin,
+  Loader2,
+  GraduationCap,
+  Briefcase,
+  Code2,
+  ChevronDown,
+  User,
+  Hash,
+  ExternalLink,
+  Code,
+  Award,
+  Calendar,
+  Phone,
+  MapPin,
+  Send,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { motion, useScroll, useSpring } from "framer-motion";
@@ -66,7 +86,9 @@ export default function Home() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState("hero");
-  const [contactStatus, setContactStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [contactStatus, setContactStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -79,39 +101,41 @@ export default function Home() {
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
-    restDelta: 0.001
+    restDelta: 0.001,
   });
 
   useEffect(() => {
     // Cache busting with timestamp
-    fetch(`/api/profile?t=${new Date().getTime()}`, { headers: { 'Cache-Control': 'no-store' }})
+    fetch(`/api/profile?t=${new Date().getTime()}`, {
+      headers: { "Cache-Control": "no-store" },
+    })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);  
+        console.log(data);
         if (data.success && data.data) {
           setProfile(data.data);
         } else {
-             // Fallback
-             setProfile({
-                 name: "Zubayer Hossain Uday",
-                 title: "Full Stack Developer",
-                 university: "Shahjalal University of Science and Technology (SUST)",
-                 bio: "Full Stack Developer with a passion for building scalable applications and DevSecOps practices.",
-                 email: "zubayerhossain1009@gmail.com",
-                 phone: "01876375141",
-                 location: "Sylhet, Bangladesh",
-                 github: "#",
-                 linkedin: "https://www.linkedin.com/in/zubayerhossainuday",
-                 education: [],
-                 experience: [],
-                 skills: []
-             });
+          // Fallback
+          setProfile({
+            name: "Zubayer Hossain Uday",
+            title: "Full Stack Developer",
+            university: "Shahjalal University of Science and Technology (SUST)",
+            bio: "Full Stack Developer with a passion for building scalable applications and DevSecOps practices.",
+            email: "zubayerhossain1009@gmail.com",
+            phone: "01876375141",
+            location: "Sylhet, Bangladesh",
+            github: "#",
+            linkedin: "https://www.linkedin.com/in/zubayerhossainuday",
+            education: [],
+            experience: [],
+            skills: [],
+          });
         }
         setLoading(false);
       })
       .catch((err) => {
-          console.error(err);
-          setLoading(false);
+        console.error(err);
+        setLoading(false);
       });
 
     // Fetch projects
@@ -136,41 +160,63 @@ export default function Home() {
 
     // Scroll spy
     const handleScroll = () => {
-        const sections = ["hero", "experience", "skills", "education", "projects", "achievements", "contact"];
-        for (const section of sections) {
-            const el = document.getElementById(section);
-            if (el) {
-                const rect = el.getBoundingClientRect();
-                if (rect.top >= -300 && rect.top <= 300) {
-                    setActiveSection(section);
-                    break;
-                }
-            }
+      const sections = [
+        "hero",
+        "experience",
+        "skills",
+        "education",
+        "projects",
+        "achievements",
+        "contact",
+      ];
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top >= -300 && rect.top <= 300) {
+            setActiveSection(section);
+            break;
+          }
         }
+      }
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   if (loading) {
-     return <div className="flex h-[calc(100vh-64px)] items-center justify-center text-white"><Loader2 className="animate-spin w-8 h-8" /></div>
+    return (
+      <div className="flex h-[calc(100vh-64px)] items-center justify-center text-white">
+        <Loader2 className="animate-spin w-8 h-8" />
+      </div>
+    );
   }
 
   if (!profile) return null;
 
   const skillsByCategory = (profile.skills || []).reduce((acc, skill) => {
-      if (!acc[skill.category]) acc[skill.category] = [];
-      acc[skill.category].push(skill.name);
-      return acc;
+    if (!acc[skill.category]) acc[skill.category] = [];
+    acc[skill.category].push(skill.name);
+    return acc;
   }, {} as Record<string, string[]>);
 
-  const categories = ["Languages", "Frontend", "Backend", "Databases", "DevOps", "Tools", "Other"];
+  const categories = [
+    "Languages",
+    "Frontend",
+    "Backend",
+    "Databases",
+    "DevOps",
+    "Tools",
+    "Other",
+  ];
 
   const scrollTo = (id: string) => {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -209,20 +255,19 @@ export default function Home() {
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, ease: "easeOut" }
+    transition: { duration: 0.6, ease: "easeOut" },
   };
 
   const stagger = {
     animate: {
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   return (
     <div className="flex flex-col items-center min-h-screen relative bg-background selection:bg-[var(--accent)] selection:text-white overflow-hidden">
-      
       {/* Scroll Progress Bar */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-[var(--accent)] origin-left z-[100]"
@@ -230,324 +275,396 @@ export default function Home() {
       />
 
       {/* Page Overview Sidebar (Left) */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 1, duration: 0.8 }}
         className="flex fixed left-2 xl:left-8 top-1/2 -translate-y-1/2 z-40 flex-col gap-4 xl:gap-6 pointer-events-auto"
       >
-         {[
-             { id: "hero", label: "Intro", icon: User },
-             { id: "experience", label: "Experience", icon: Briefcase },
-             { id: "skills", label: "Skills", icon: Code2 },
-             { id: "education", label: "Education", icon: GraduationCap },
-             { id: "projects", label: "Projects", icon: Code },
-             { id: "achievements", label: "Achievements", icon: Award },
-             { id: "contact", label: "Contact", icon: Mail },
-         ].map((item) => (
-             <button 
-                key={item.id}
-                onClick={() => scrollTo(item.id)}
-                className="group relative flex items-center justify-center w-10 h-10 xl:w-12 xl:h-12"
-             >
-                 <div className={cn(
-                     "absolute inset-0 rounded-full border border-gray-800 bg-[#0a0a0a] transition-all duration-300",
-                     activeSection === item.id ? "scale-100 border-[var(--accent)] shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)]" : "scale-75 group-hover:scale-90 group-hover:border-gray-600"
-                 )} />
-                 <item.icon className={cn(
-                     "w-3 h-3 xl:w-4 xl:h-4 relative z-10 transition-colors duration-300",
-                     activeSection === item.id ? "text-[var(--accent)]" : "text-gray-500 group-hover:text-gray-300"
-                 )} />
-                 
-                 {/* Label Tooltip - Hidden on mobile, visible on XML */}
-                 <span className="hidden xl:block absolute left-14 px-3 py-1 rounded bg-muted border border-[#333] text-xs font-semibold tracking-wide text-gray-300 opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 whitespace-nowrap z-50 pointer-events-none">
-                     {item.label}
-                 </span>
-             </button>
-         ))}
-         <div className="absolute left-[1.25rem] xl:left-6 top-6 bottom-6 w-[1px] bg-gradient-to-b from-transparent via-gray-800 to-transparent -z-10" />
+        {[
+          { id: "hero", label: "Intro", icon: User },
+          { id: "experience", label: "Experience", icon: Briefcase },
+          { id: "skills", label: "Skills", icon: Code2 },
+          { id: "education", label: "Education", icon: GraduationCap },
+          { id: "projects", label: "Projects", icon: Code },
+          { id: "achievements", label: "Achievements", icon: Award },
+          { id: "contact", label: "Contact", icon: Mail },
+        ].map((item) => (
+          <button
+            key={item.id}
+            onClick={() => scrollTo(item.id)}
+            className="group relative flex items-center justify-center w-10 h-10 xl:w-12 xl:h-12"
+          >
+            <div
+              className={cn(
+                "absolute inset-0 rounded-full border border-gray-800 bg-[#0a0a0a] transition-all duration-300",
+                activeSection === item.id
+                  ? "scale-100 border-[var(--accent)] shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)]"
+                  : "scale-75 group-hover:scale-90 group-hover:border-gray-600"
+              )}
+            />
+            <item.icon
+              className={cn(
+                "w-3 h-3 xl:w-4 xl:h-4 relative z-10 transition-colors duration-300",
+                activeSection === item.id
+                  ? "text-[var(--accent)]"
+                  : "text-gray-500 group-hover:text-gray-300"
+              )}
+            />
+
+            {/* Label Tooltip - Hidden on mobile, visible on XML */}
+            <span className="hidden xl:block absolute left-14 px-3 py-1 rounded bg-muted border border-[#333] text-xs font-semibold tracking-wide text-gray-300 opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 whitespace-nowrap z-50 pointer-events-none">
+              {item.label}
+            </span>
+          </button>
+        ))}
+        <div className="absolute left-[1.25rem] xl:left-6 top-6 bottom-6 w-[1px] bg-gradient-to-b from-transparent via-gray-800 to-transparent -z-10" />
       </motion.div>
 
       {/* Hero Section */}
-      <section id="hero" className="relative flex flex-col items-center justify-center min-h-[calc(100vh-64px)] pl-16 pr-4 sm:px-6 lg:px-8 w-full">
-         {/* Background Elements - Minimal Tech Vibe */}
-         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl" />
-         </div>
+      <section
+        id="hero"
+        className="relative flex flex-col items-center justify-center min-h-[calc(100vh-64px)] pl-16 pr-4 sm:px-6 lg:px-8 w-full"
+      >
+        {/* Background Elements - Minimal Tech Vibe */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl" />
+        </div>
 
-        <motion.div 
-            initial="initial"
-            animate="animate"
-            variants={stagger}
-            className="text-left space-y-8 max-w-5xl mx-auto relative z-10 pb-16 w-full pt-4 sm:pt-0"
+        <motion.div
+          initial="initial"
+          animate="animate"
+          variants={stagger}
+          className="text-left space-y-8 max-w-5xl mx-auto relative z-10 pb-16 w-full pt-4 sm:pt-0"
         >
-            <motion.div variants={fadeInUp} className="space-y-6">
-                <div className="inline-block px-4 py-1.5 rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/5 text-[var(--accent)] text-sm font-semibold tracking-wider uppercase backdrop-blur-sm">
-                    Open to Work
-                </div>
-                
-                <div className="relative block w-full">
-                    <TypewriterText
-                        text={profile.name}
-                        className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter text-foreground break-words justify-start"
-                    />
-                    {/* Decorative Circuit Lines - Simulated with borders */}
-                    <div className="hidden lg:block absolute -right-12 top-1/2 w-8 h-[1px] bg-[#333]" />
-                    <div className="hidden lg:block absolute -right-12 top-1/2 h-16 w-[1px] bg-[#333]" />
-                </div>
+          <motion.div variants={fadeInUp} className="space-y-6">
+            <div className="inline-block px-4 py-1.5 rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/5 text-[var(--accent)] text-sm font-semibold tracking-wider uppercase backdrop-blur-sm">
+              Open to Work
+            </div>
 
-                <p className="text-xl sm:text-2xl md:text-3xl text-gray-400 font-light max-w-3xl leading-normal">
-                    <span className="text-foreground font-normal">{profile.title}</span> 
-                </p>
-{/*                 
+            <div className="relative block w-full">
+              <TypewriterText
+                text={profile.name}
+                className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter text-foreground break-words justify-start"
+              />
+              {/* Decorative Circuit Lines - Simulated with borders */}
+              <div className="hidden lg:block absolute -right-12 top-1/2 w-8 h-[1px] bg-[#333]" />
+              <div className="hidden lg:block absolute -right-12 top-1/2 h-16 w-[1px] bg-[#333]" />
+            </div>
+
+            <p className="text-xl sm:text-2xl md:text-3xl text-gray-400 font-light max-w-3xl leading-normal">
+              <span className="text-foreground font-normal">
+                {profile.title}
+              </span>
+            </p>
+            {/*                 
                 <div className="flex items-center justify-start gap-3 text-gray-500 font-mono text-sm sm:text-base">
                     <MapPin className="w-4 h-4 text-[var(--accent)]" />
                     <span>{profile.university}</span>
                 </div> */}
-            </motion.div>
+          </motion.div>
 
-            {profile.bio && profile.bio.trim() !== '""' && profile.bio.trim() !== '' && (
-                <motion.p variants={fadeInUp} className="text-gray-400 text-lg sm:text-xl max-w-2xl leading-relaxed border-l-2 border-[var(--accent)] pl-6 text-left italic bg-muted/30 p-4 rounded-r-lg backdrop-blur-sm">
-                    "{profile.bio}"
-                </motion.p>
+          {profile.bio &&
+            profile.bio.trim() !== '""' &&
+            profile.bio.trim() !== "" && (
+              <motion.p
+                variants={fadeInUp}
+                className="text-gray-400 text-lg sm:text-xl max-w-2xl leading-relaxed border-l-2 border-[var(--accent)] pl-6 text-left italic bg-muted/30 p-4 rounded-r-lg backdrop-blur-sm"
+              >
+                "{profile.bio}"
+              </motion.p>
             )}
 
-            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-5 justify-start mt-12 text-sm sm:text-base">
-                <Link
-                    href="/projects"
-                    className="group relative px-6 py-4 bg-[var(--accent)] text-foreground font-bold rounded-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)] w-fit"
-                >
-                    <span className="relative z-10 flex items-center gap-2 justify-center">View Projects <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
-                    <div className="absolute inset-0 bg-white/20 translate-y-full skew-y-12 group-hover:translate-y-0 transition-transform duration-500" />
-                </Link>
-                <Link
-                    href="/contact"
-                    className="group px-6 py-4 bg-transparent border border-[#333] text-foreground font-bold rounded-lg hover:bg-muted hover:border-[var(--accent)] transition-all flex items-center gap-2 justify-center w-fit"
-                >
-                    Contact Me <Mail className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                </Link>
-            </motion.div>
-            
-            <motion.div variants={fadeInUp} className="flex gap-6 items-center justify-start pt-1 mb-16 sm:mb-0">
-                    {profile.linkedin && (
-                        <Link href={profile.linkedin} target="_blank" className="p-3 rounded-full bg-muted border border-[#333] text-gray-400 hover:text-[#0a66c2] hover:border-[#0a66c2] hover:-translate-y-1 transition-all duration-300">
-                            <Linkedin className="w-6 h-6" />
-                        </Link>
-                    )}
-                    {profile.github && (
-                        <Link href={profile.github} target="_blank" className="p-3 rounded-full bg-muted border border-[#333] text-gray-400 hover:text-foreground hover:border-white hover:-translate-y-1 transition-all duration-300">
-                            <Github className="w-6 h-6" />
-                        </Link>
-                    )}
-            </motion.div>
+          <motion.div
+            variants={fadeInUp}
+            className="flex flex-col sm:flex-row gap-5 justify-start mt-12 text-sm sm:text-base"
+          >
+            <Link
+              href="/projects"
+              className="group relative px-6 py-4 bg-[var(--accent)] text-foreground font-bold rounded-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)] w-fit"
+            >
+              <span className="relative z-10 flex items-center gap-2 justify-center">
+                View Projects{" "}
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </span>
+              <div className="absolute inset-0 bg-white/20 translate-y-full skew-y-12 group-hover:translate-y-0 transition-transform duration-500" />
+            </Link>
+            <Link
+              href="/contact"
+              className="group px-6 py-4 bg-transparent border border-[#333] text-foreground font-bold rounded-lg hover:bg-muted hover:border-[var(--accent)] transition-all flex items-center gap-2 justify-center w-fit"
+            >
+              Contact Me{" "}
+              <Mail className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+            </Link>
+          </motion.div>
+
+          <motion.div
+            variants={fadeInUp}
+            className="flex gap-6 items-center justify-start pt-1 mb-16 sm:mb-0"
+          >
+            {profile.linkedin && (
+              <Link
+                href={profile.linkedin}
+                target="_blank"
+                className="p-3 rounded-full bg-muted border border-[#333] text-gray-400 hover:text-[#0a66c2] hover:border-[#0a66c2]"
+              >
+                <Linkedin className="w-6 h-6" />
+              </Link>
+            )}
+            {profile.github && (
+              <Link
+                href={profile.github}
+                target="_blank"
+                className="p-3 rounded-full bg-muted border border-[#333] text-gray-400 hover:text-foreground hover:border-white"
+              >
+                <Github className="w-6 h-6" />
+              </Link>
+            )}
+          </motion.div>
         </motion.div>
 
         {/* Enhanced Scroll Indicator */}
-        <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 1 }}
-            className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-4 z-20 pointer-events-none md:pointer-events-auto"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 1 }}
+          className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-4 z-20 pointer-events-none md:pointer-events-auto"
         >
-            <div className="hidden sm:flex gap-4 text-xs font-mono text-gray-500 uppercase tracking-[0.2em] border-t border-b border-[#333] py-2 px-8 bg-[#0a0a0a]/80 backdrop-blur rounded-full">
-                <span>Experience</span>
-                <span className="text-[var(--accent)]">•</span>
-                <span>Scroll</span>
-                <span className="text-[var(--accent)]">•</span>
-                <span>Skills</span>
-            </div>
-            {/* Mobile simplified scroll text */}
-            <div className="sm:hidden text-[10px] font-mono text-gray-600 uppercase tracking-widest mb-1">
-                Scroll
-            </div>
-            <button onClick={() => scrollTo("experience")} className="animate-bounce cursor-pointer p-2 rounded-full hover:bg-muted transition-colors pointer-events-auto big-hit-area">
-                <ChevronDown className="w-6 h-6 text-[var(--accent)]" />
-            </button>
+          <div className="hidden sm:flex gap-4 text-xs font-mono text-gray-500 uppercase tracking-[0.2em] border-t border-b border-[#333] py-2 px-8 bg-[#0a0a0a]/80 backdrop-blur rounded-full">
+            <span>Experience</span>
+            <span className="text-[var(--accent)]">•</span>
+            <span>Scroll</span>
+            <span className="text-[var(--accent)]">•</span>
+            <span>Skills</span>
+          </div>
+          {/* Mobile simplified scroll text */}
+          <div className="sm:hidden text-[10px] font-mono text-gray-600 uppercase tracking-widest mb-1">
+            Scroll
+          </div>
+          <button
+            onClick={() => scrollTo("experience")}
+            className="animate-bounce cursor-pointer p-2 rounded-full hover:bg-muted transition-colors pointer-events-auto big-hit-area"
+          >
+            <ChevronDown className="w-6 h-6 text-[var(--accent)]" />
+          </button>
         </motion.div>
       </section>
 
       {/* Experience Section */}
       {profile.experience?.length > 0 && (
-          <section id="experience" className="w-full py-12 md:py-24 px-4 sm:px-6 relative">
-              <div className="max-w-6xl mx-auto pl-12 sm:pl-0">
-                  <motion.div 
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    className="flex items-center gap-4 mb-12 md:mb-16"
-                  >
-                      <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
-                          <Briefcase className="w-8 h-8 text-[var(--accent)]" />
-                      </div>
-                      <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Professional <span className="text-[var(--accent)]">Exp.</span></h2>
-                  </motion.div>
-
-                  <div className="relative space-y-12 md:space-y-16 pl-6 md:pl-0">
-                      {/* Central Line for Desktop */}
-                      <div className="hidden md:block absolute left-1/2 top-4 bottom-0 w-[1px] bg-[#262626] -translate-x-1/2" />
-                      {/* Left Line for Mobile */}
-                      <div className="md:hidden absolute left-0 top-4 bottom-0 w-[1px] bg-[#262626]" />
-
-                      {profile.experience.map((exp, idx) => (
-                          <motion.div 
-                            key={idx}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, margin: "-50px" }}
-                            transition={{ duration: 0.5, delay: idx * 0.1 }}
-                            className={cn(
-                                "relative md:flex items-center gap-12 group",
-                                idx % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                            )}
-                          >
-                              {/* Connector Dot */}
-                              <div className="absolute left-[-1.5rem] md:left-1/2 top-0 md:top-1/2 w-4 h-4 rounded-full bg-[#0a0a0a] border-4 border-[var(--accent)] -translate-x-1/2 md:-translate-y-1/2 z-10 group-hover:scale-150 transition-transform duration-300 shadow-[0_0_10px_var(--accent)] mt-1 md:mt-0" />
-
-                              {/* Content Card */}
-                              <div className="md:w-1/2">
-                                  <SpotlightCard className="p-6 md:p-8 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)] group-hover:-translate-y-2 border-0 bg-muted">
-                                      <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2">
-                                          <h3 className="text-xl md:text-2xl font-bold text-foreground">{exp.role}</h3>
-                                          <span className="text-xs font-mono text-[var(--accent)] bg-[var(--accent)]/10 px-3 py-1 rounded-full border border-[var(--accent)]/20 whitespace-nowrap">{exp.duration}</span>
-                                      </div>
-                                      <div className="text-base md:text-lg text-muted-foreground font-medium mb-4 flex items-center gap-2">
-                                          <span className="w-2 h-2 bg-[var(--accent)] rounded-full" />
-                                          {exp.company}
-                                      </div>
-                                      <p className="text-gray-400 leading-relaxed whitespace-pre-wrap text-sm">{exp.description}</p>
-                                  </SpotlightCard>
-                              </div>
-                              <div className="md:w-1/2" /> {/* Spacer for alternating layout */}
-                          </motion.div>
-                      ))}
-                  </div>
+        <section
+          id="experience"
+          className="w-full py-12 md:py-24 px-4 sm:px-6 relative"
+        >
+          <div className="max-w-6xl mx-auto pl-12 sm:pl-0">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex items-center gap-4 mb-12 md:mb-16"
+            >
+              <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
+                <Briefcase className="w-8 h-8 text-[var(--accent)]" />
               </div>
-          </section>
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">
+                Professional <span className="text-[var(--accent)]">Exp.</span>
+              </h2>
+            </motion.div>
+
+            <div className="relative space-y-12 md:space-y-16 pl-6 md:pl-0">
+              {/* Central Line for Desktop */}
+              <div className="hidden md:block absolute left-1/2 top-4 bottom-0 w-[1px] bg-[#262626] -translate-x-1/2" />
+              {/* Left Line for Mobile */}
+              <div className="md:hidden absolute left-0 top-4 bottom-0 w-[1px] bg-[#262626]" />
+
+              {profile.experience.map((exp, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  className={cn(
+                    "relative md:flex items-center gap-12 group",
+                    idx % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                  )}
+                >
+                  {/* Connector Dot */}
+                  <div className="absolute left-[-1.5rem] md:left-1/2 top-0 md:top-1/2 w-4 h-4 rounded-full bg-[#0a0a0a] border-4 border-[var(--accent)] -translate-x-1/2 md:-translate-y-1/2 z-10 group-hover:scale-150 transition-transform duration-300 shadow-[0_0_10px_var(--accent)] mt-1 md:mt-0" />
+                  {/* Content Card */}
+                  <div className="md:w-1/2">
+                    <SpotlightCard className="p-6 md:p-8 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)] group-hover:-translate-y-2 border-0 bg-muted">
+                      <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2">
+                        <h3 className="text-xl md:text-2xl font-bold text-foreground">
+                          {exp.role}
+                        </h3>
+                        <span className="text-xs font-mono text-[var(--accent)] bg-[var(--accent)]/10 px-3 py-1 rounded-full border border-[var(--accent)]/20 whitespace-nowrap">
+                          {exp.duration}
+                        </span>
+                      </div>
+                      <div className="text-base md:text-lg text-muted-foreground font-medium mb-4 flex items-center gap-2">
+                        <span className="w-2 h-2 bg-[var(--accent)] rounded-full" />
+                        {exp.company}
+                      </div>
+                      <p className="text-gray-400 leading-relaxed whitespace-pre-wrap text-sm">
+                        {exp.description}
+                      </p>
+                    </SpotlightCard>
+                  </div>
+                  <div className="md:w-1/2" />{" "}
+                  {/* Spacer for alternating layout */}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
       )}
 
-       {/* Skills Section */}
-       {profile.skills?.length > 0 && (
-          <section id="skills" className="w-full py-12 md:py-24 px-4 sm:px-6 bg-background border-t border-border">
-              <div className="max-w-6xl mx-auto pl-12 sm:pl-0">
-                  <motion.div 
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    className="flex items-center gap-4 mb-12 md:mb-16"
-                  >
-                      <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
-                          <Code2 className="w-8 h-8 text-[var(--accent)]" />
-                      </div>
-                      <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Technical <span className="text-[var(--accent)]">Arsenhal</span></h2>
-                  </motion.div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {categories.map((cat, catIdx) => {
-                          const skills = skillsByCategory[cat];
-                          if (!skills || skills.length === 0) return null;
-                          
-                          return (
-                              <motion.div 
-                                key={cat}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: catIdx * 0.1 }}
-                                className="group relative bg-muted p-6 md:p-8 rounded-[2rem] border border-border hover:border-[var(--accent)] transition-all duration-300 hover:shadow-2xl overflow-hidden"
-                              >
-                                  {/* Hover Glow Effect */}
-                                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                                  
-                                  <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-3 relative z-10">
-                                      <Hash className="w-5 h-5 text-[var(--accent)]" /> {cat}
-                                  </h3>
-                                  <div className="flex flex-wrap gap-2 relative z-10">
-                                      {skills.map((skill, i) => (
-                                          <div key={i} className="px-3 py-1.5 bg-muted text-muted-foreground rounded-lg text-sm font-medium border border-border transition-all duration-300 group-hover:border-[var(--accent)]/30 group-hover:text-foreground hover:!bg-[var(--accent)] hover:!border-[var(--accent)] cursor-default">
-                                              {skill}
-                                          </div>
-                                      ))}
-                                  </div>
-                              </motion.div>
-                          )
-                      })}
-                  </div>
+      {/* Skills Section */}
+      {profile.skills?.length > 0 && (
+        <section
+          id="skills"
+          className="w-full py-12 md:py-24 px-4 sm:px-6 bg-background border-t border-border"
+        >
+          <div className="max-w-6xl mx-auto pl-12 sm:pl-0">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex items-center gap-4 mb-12 md:mb-16"
+            >
+              <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
+                <Code2 className="w-8 h-8 text-[var(--accent)]" />
               </div>
-          </section>
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">
+                Technical <span className="text-[var(--accent)]">Arsenhal</span>
+              </h2>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {categories.map((cat, catIdx) => {
+                const skills = skillsByCategory[cat];
+                if (!skills || skills.length === 0) return null;
+
+                return (
+                  <motion.div
+                    key={cat}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: catIdx * 0.1 }}
+                    className="group relative bg-muted p-6 md:p-8 rounded-[2rem] border border-border hover:border-[var(--accent)] transition-all duration-300 hover:shadow-2xl overflow-hidden"
+                  >
+                    {/* Hover Glow Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                    <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-3 relative z-10">
+                      <Hash className="w-5 h-5 text-[var(--accent)]" /> {cat}
+                    </h3>
+                    <div className="flex flex-wrap gap-2 relative z-10">
+                      {skills.map((skill, i) => (
+                        <div
+                          key={i}
+                          className="px-3 py-1.5 bg-muted text-muted-foreground rounded-lg text-sm font-medium border border-border transition-all duration-300 group-hover:border-[var(--accent)]/30 group-hover:text-foreground hover:!bg-[var(--accent)] hover:!border-[var(--accent)] cursor-default"
+                        >
+                          {skill}
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
       )}
 
       {/* Education Section */}
       {profile.education?.length > 0 && (
-          <section id="education" className="w-full py-12 md:py-24 px-4 sm:px-6 relative overflow-hidden">
-               {/* Background Decoration */}
-               <div className="absolute top-1/2 right-0 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl -translate-y-1/2 pointer-events-none" />
+        <section
+          id="education"
+          className="w-full py-12 md:py-24 px-4 sm:px-6 relative overflow-hidden"
+        >
+          {/* Background Decoration */}
+          <div className="absolute top-1/2 right-0 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl -translate-y-1/2 pointer-events-none" />
 
-              <div className="max-w-6xl mx-auto relative z-10 pl-12 sm:pl-0">
-                  <motion.div 
-                    initial={{ opacity: 0, x: -20 }}
+          <div className="max-w-6xl mx-auto relative z-10 pl-12 sm:pl-0">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex items-center gap-4 mb-12 md:mb-16"
+            >
+              <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
+                <GraduationCap className="w-8 h-8 text-[var(--accent)]" />
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">
+                Academic <span className="text-[var(--accent)]">Journey</span>
+              </h2>
+            </motion.div>
+
+            <div className="grid grid-cols-1 gap-6">
+              {profile.education.map((edu, idx) => {
+                // Logic for Present
+                let endDisplay = edu.endDate;
+                const entDateObj = new Date(edu.endDate);
+                const now = new Date();
+                if (!isNaN(entDateObj.getTime()) && entDateObj > now) {
+                  endDisplay = "Present";
+                } else if (edu.endDate.toLowerCase() === "present") {
+                  endDisplay = "Present";
+                }
+
+                return (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    className="flex items-center gap-4 mb-12 md:mb-16"
+                    transition={{ delay: idx * 0.1 }}
+                    className="group relative bg-muted p-6 md:p-10 rounded-2xl border border-border hover:border-[var(--accent)] transition-all duration-500 overflow-hidden"
                   >
-                      <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
-                          <GraduationCap className="w-8 h-8 text-[var(--accent)]" />
+                    <div className="absolute right-0 top-0 h-full w-2 bg-[var(--accent)] scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top" />
+
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                      <div className="space-y-2">
+                        <h3 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-[var(--accent)] transition-colors">
+                          {edu.institution}
+                        </h3>
+                        <div className="flex items-center gap-3 text-lg md:text-xl text-muted-foreground">
+                          <GraduationCap className="w-5 h-5 text-muted-foreground" />
+                          {edu.degree}
+                        </div>
                       </div>
-                      <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Academic <span className="text-[var(--accent)]">Journey</span></h2>
+                      <div className="flex items-center gap-3 bg-muted px-6 py-3 rounded-full border border-border group-hover:border-[var(--accent)]/30 transition-colors w-fit">
+                        <span className="text-[var(--accent)] font-bold whitespace-nowrap">
+                          {edu.startDate}
+                        </span>
+                        <ArrowRight className="w-4 h-4 text-muted-foreground" />
+
+                        <span className="text-foreground font-bold whitespace-nowrap">
+                          {endDisplay}
+                        </span>
+                      </div>
+                    </div>
                   </motion.div>
-
-                  <div className="grid grid-cols-1 gap-6">
-                      {profile.education.map((edu, idx) => {
-                          // Logic for Present
-                          let endDisplay = edu.endDate;
-                          const entDateObj = new Date(edu.endDate);
-                          const now = new Date();
-                          if (!isNaN(entDateObj.getTime()) && entDateObj > now) {
-                              endDisplay = "Present";
-                          } else if (edu.endDate.toLowerCase() === 'present') {
-                              endDisplay = "Present";
-                          }
-
-                          return (
-                            <motion.div 
-                                key={idx}
-                                initial={{ opacity: 0, x: -50 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="group relative bg-muted p-6 md:p-10 rounded-2xl border border-border hover:border-[var(--accent)] transition-all duration-500 overflow-hidden"
-                            >
-                                <div className="absolute right-0 top-0 h-full w-2 bg-[var(--accent)] scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top" />
-                                
-                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                                    <div className="space-y-2">
-                                        <h3 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-[var(--accent)] transition-colors">{edu.institution}</h3>
-                                        <div className="flex items-center gap-3 text-lg md:text-xl text-muted-foreground">
-                                            <GraduationCap className="w-5 h-5 text-muted-foreground" />
-                                            {edu.degree}
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-3 bg-muted px-6 py-3 rounded-full border border-border group-hover:border-[var(--accent)]/30 transition-colors w-fit">
-                                        <span className="text-[var(--accent)] font-bold whitespace-nowrap">{edu.startDate}</span>
-                                        <ArrowRight className="w-4 h-4 text-muted-foreground" />
-
-                                        <span className="text-foreground font-bold whitespace-nowrap">{endDisplay}</span>
-                                    </div>
-                                </div>
-                            </motion.div>
-                          );
-                      })}
-                  </div>
-              </div>
-          </section>
+                );
+              })}
+            </div>
+          </div>
+        </section>
       )}
 
       {/* Projects Section */}
       {projects.length > 0 && (
-        <section id="projects" className="w-full py-12 md:py-24 px-4 sm:px-6 bg-background border-t border-border">
+        <section
+          id="projects"
+          className="w-full py-12 md:py-24 px-4 sm:px-6 bg-background border-t border-border"
+        >
           <div className="max-w-6xl mx-auto pl-12 sm:pl-0">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -556,7 +673,9 @@ export default function Home() {
               <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
                 <Code className="w-8 h-8 text-[var(--accent)]" />
               </div>
-              <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Notable <span className="text-[var(--accent)]">Projects</span></h2>
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">
+                Notable <span className="text-[var(--accent)]">Projects</span>
+              </h2>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -595,7 +714,7 @@ export default function Home() {
                         )}
                       </div>
                     </div>
-                    
+
                     <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-[var(--accent)] transition-colors">
                       {project.title}
                     </h3>
@@ -626,7 +745,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="mt-12 text-center"
             >
-              <Link 
+              <Link
                 href="/projects"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border border-[#333] text-foreground font-bold rounded-lg hover:bg-muted hover:border-[var(--accent)] transition-all"
               >
@@ -639,11 +758,14 @@ export default function Home() {
 
       {/* Achievements Section */}
       {achievements.length > 0 && (
-        <section id="achievements" className="w-full py-12 md:py-24 px-4 sm:px-6 relative overflow-hidden">
+        <section
+          id="achievements"
+          className="w-full py-12 md:py-24 px-4 sm:px-6 relative overflow-hidden"
+        >
           <div className="absolute top-1/2 left-0 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl -translate-y-1/2 pointer-events-none" />
 
           <div className="max-w-6xl mx-auto relative z-10 pl-12 sm:pl-0">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -652,7 +774,9 @@ export default function Home() {
               <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
                 <Award className="w-8 h-8 text-[var(--accent)]" />
               </div>
-              <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Key <span className="text-[var(--accent)]">Achievements</span></h2>
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">
+                Key <span className="text-[var(--accent)]">Achievements</span>
+              </h2>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -668,9 +792,11 @@ export default function Home() {
                   <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                     <Award className="w-24 h-24 text-[var(--accent)]" />
                   </div>
-                  
-                  <h3 className="text-2xl font-bold text-foreground mb-4 relative z-10">{achievement.title}</h3>
-                  
+
+                  <h3 className="text-2xl font-bold text-foreground mb-4 relative z-10">
+                    {achievement.title}
+                  </h3>
+
                   <div className="flex flex-col gap-2 mb-6 text-sm text-muted-foreground relative z-10">
                     <div className="flex items-center gap-2">
                       <Briefcase className="w-4 h-4 text-[var(--accent)]" />
@@ -695,7 +821,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="mt-12 text-center"
             >
-              <Link 
+              <Link
                 href="/achievements"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border border-[#333] text-foreground font-bold rounded-lg hover:bg-muted hover:border-[var(--accent)] transition-all"
               >
@@ -707,9 +833,12 @@ export default function Home() {
       )}
 
       {/* Contact Section */}
-      <section id="contact" className="w-full py-12 md:py-24 px-4 sm:px-6 bg-background border-t border-border">
+      <section
+        id="contact"
+        className="w-full py-12 md:py-24 px-4 sm:px-6 bg-background border-t border-border"
+      >
         <div className="max-w-6xl mx-auto pl-12 sm:pl-0">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -718,20 +847,23 @@ export default function Home() {
             <div className="p-3 bg-[var(--accent)]/10 rounded-xl">
               <Mail className="w-8 h-8 text-[var(--accent)]" />
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Get in <span className="text-[var(--accent)]">Touch</span></h2>
+            <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">
+              Get in <span className="text-[var(--accent)]">Touch</span>
+            </h2>
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Info */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
               <p className="text-muted-foreground text-lg mb-8">
-                Have a project in mind or want to discuss potential opportunities? 
-                I&apos;m currently available for freelance work and open to new challenges.
+                Have a project in mind or want to discuss potential
+                opportunities? I&apos;m currently available for freelance work
+                and open to new challenges.
               </p>
 
               <div className="space-y-6">
@@ -740,8 +872,13 @@ export default function Home() {
                     <Mail className="w-6 h-6 text-[var(--accent)]" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-medium text-foreground">Email</h3>
-                    <a href={`mailto:${profile.email}`} className="text-muted-foreground hover:text-[var(--accent)] transition-colors">
+                    <h3 className="text-lg font-medium text-foreground">
+                      Email
+                    </h3>
+                    <a
+                      href={`mailto:${profile.email}`}
+                      className="text-muted-foreground hover:text-[var(--accent)] transition-colors"
+                    >
                       {profile.email}
                     </a>
                   </div>
@@ -752,8 +889,13 @@ export default function Home() {
                     <Phone className="w-6 h-6 text-[var(--accent)]" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-medium text-foreground">Phone</h3>
-                    <a href={`tel:${profile.phone}`} className="text-muted-foreground hover:text-[var(--accent)] transition-colors">
+                    <h3 className="text-lg font-medium text-foreground">
+                      Phone
+                    </h3>
+                    <a
+                      href={`tel:${profile.phone}`}
+                      className="text-muted-foreground hover:text-[var(--accent)] transition-colors"
+                    >
                       {profile.phone}
                     </a>
                   </div>
@@ -764,10 +906,10 @@ export default function Home() {
                     <MapPin className="w-6 h-6 text-[var(--accent)]" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-medium text-foreground">Location</h3>
-                    <p className="text-muted-foreground">
-                      {profile.location}
-                    </p>
+                    <h3 className="text-lg font-medium text-foreground">
+                      Location
+                    </h3>
+                    <p className="text-muted-foreground">{profile.location}</p>
                   </div>
                 </div>
               </div>
@@ -781,12 +923,17 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="bg-muted p-8 rounded-xl border border-border"
             >
-              <h3 className="text-2xl font-bold text-foreground mb-6">Send Message</h3>
-              
+              <h3 className="text-2xl font-bold text-foreground mb-6">
+                Send Message
+              </h3>
+
               <form onSubmit={handleContactSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-muted-foreground mb-2">
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-muted-foreground mb-2"
+                    >
                       Name
                     </label>
                     <input
@@ -801,7 +948,10 @@ export default function Home() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="mobile" className="block text-sm font-medium text-muted-foreground mb-2">
+                    <label
+                      htmlFor="mobile"
+                      className="block text-sm font-medium text-muted-foreground mb-2"
+                    >
                       Mobile Number
                     </label>
                     <input
@@ -817,7 +967,10 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-2">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-muted-foreground mb-2"
+                  >
                     Email Address
                   </label>
                   <input
@@ -833,7 +986,10 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-muted-foreground mb-2">
+                  <label
+                    htmlFor="message"
+                    className="block text-sm font-medium text-muted-foreground mb-2"
+                  >
                     Message
                   </label>
                   <textarea
@@ -868,7 +1024,8 @@ export default function Home() {
 
                 {contactStatus === "success" && (
                   <div className="p-4 bg-green-900/20 border border-green-900 rounded-md flex items-center text-green-400">
-                    <CheckCircle className="w-5 h-5 mr-2" /> Message sent successfully!
+                    <CheckCircle className="w-5 h-5 mr-2" /> Message sent
+                    successfully!
                   </div>
                 )}
 
@@ -886,11 +1043,11 @@ export default function Home() {
       {/* Global Styles for this page */}
       <style jsx global>{`
         html {
-            scroll-behavior: smooth;
+          scroll-behavior: smooth;
         }
         ::selection {
-            background-color: var(--accent);
-            color: white;
+          background-color: var(--accent);
+          color: white;
         }
       `}</style>
     </div>
