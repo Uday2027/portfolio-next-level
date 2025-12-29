@@ -24,6 +24,7 @@ import {
   Send,
   CheckCircle,
   AlertCircle,
+  FileText,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -252,6 +253,19 @@ export default function Home() {
     }
   };
 
+  const handleResumeClick = () => {
+    // Open resume in new tab
+    window.open("/assets/resume.pdf", "_blank");
+    
+    // Trigger download simultaneously
+    const link = document.createElement("a");
+    link.href = "/assets/resume.pdf";
+    link.download = "resume.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
@@ -391,6 +405,13 @@ export default function Home() {
               </span>
               <div className="absolute inset-0 bg-white/20 translate-y-full skew-y-12 group-hover:translate-y-0 transition-transform duration-500" />
             </Link>
+            <button
+              onClick={handleResumeClick}
+              className="group px-6 py-4 bg-transparent border border-[var(--accent)] text-foreground font-bold rounded-lg hover:bg-[var(--accent)]/10 hover:border-[var(--accent)] transition-all flex items-center gap-2 justify-center w-fit"
+            >
+              View Resume{" "}
+              <FileText className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            </button>
             <Link
               href="/contact"
               className="group px-6 py-4 bg-transparent border border-[#333] text-foreground font-bold rounded-lg hover:bg-muted hover:border-[var(--accent)] transition-all flex items-center gap-2 justify-center w-fit"
