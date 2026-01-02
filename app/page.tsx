@@ -352,7 +352,7 @@ export default function Home() {
           initial="initial"
           animate="animate"
           variants={stagger}
-          className="text-left space-y-8 max-w-5xl mx-auto relative z-10 pb-16 w-full pt-4 sm:pt-0"
+          className="text-left space-y-8 max-w-5xl mx-auto relative z-10 pb-16 w-full pt-8 sm:pt-12 md:pt-16"
         >
           {/* Hero Content Container - Flexbox for Photo + Text */}
           <div className="flex flex-col-reverse md:flex-row gap-8 md:gap-12 items-center md:items-start">
