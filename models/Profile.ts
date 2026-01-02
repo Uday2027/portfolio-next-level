@@ -26,6 +26,7 @@ export interface IProfile extends Document {
   university: string;
   bio: string;
   themeColor?: string;
+  photoUrl?: string;
   email: string;
   phone: string;
   location: string;
@@ -62,6 +63,7 @@ const ProfileSchema: Schema = new Schema({
   university: { type: String, required: true },
   bio: { type: String },
   themeColor: { type: String, default: "#2563eb" },
+  photoUrl: { type: String },
   email: { type: String, required: true },
   phone: { type: String },
   location: { type: String },

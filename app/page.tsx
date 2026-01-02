@@ -76,6 +76,7 @@ interface Profile {
   location: string;
   github: string;
   linkedin: string;
+  photoUrl?: string;
   education: Education[];
   experience: Experience[];
   skills: Skill[];
@@ -353,97 +354,134 @@ export default function Home() {
           variants={stagger}
           className="text-left space-y-8 max-w-5xl mx-auto relative z-10 pb-16 w-full pt-4 sm:pt-0"
         >
-          <motion.div variants={fadeInUp} className="space-y-6">
-            <div className="inline-block px-4 py-1.5 rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/5 text-[var(--accent)] text-sm font-semibold tracking-wider uppercase backdrop-blur-sm">
-              Open to Work
-            </div>
+          {/* Hero Content Container - Flexbox for Photo + Text */}
+          <div className="flex flex-col-reverse md:flex-row gap-8 md:gap-12 items-center md:items-start">
+            {/* Left: Text Content */}
+            <div className="flex-1 space-y-8">
+              <motion.div variants={fadeInUp} className="space-y-6">
+                <div className="inline-block px-4 py-1.5 rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/5 text-[var(--accent)] text-sm font-semibold tracking-wider uppercase backdrop-blur-sm">
+                  Open to Work
+                </div>
 
-            <div className="relative block w-full">
-              <TypewriterText
-                text={profile.name}
-                className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter text-foreground break-words justify-start"
-              />
-              {/* Decorative Circuit Lines - Simulated with borders */}
-              <div className="hidden lg:block absolute -right-12 top-1/2 w-8 h-[1px] bg-[#333]" />
-              <div className="hidden lg:block absolute -right-12 top-1/2 h-16 w-[1px] bg-[#333]" />
-            </div>
+                <div className="relative block w-full">
+                  <TypewriterText
+                    text={profile.name}
+                    className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter text-foreground break-words justify-start"
+                  />
+                  {/* Decorative Circuit Lines - Simulated with borders */}
+                  <div className="hidden lg:block absolute -right-12 top-1/2 w-8 h-[1px] bg-[#333]" />
+                  <div className="hidden lg:block absolute -right-12 top-1/2 h-16 w-[1px] bg-[#333]" />
+                </div>
 
-            <p className="text-xl sm:text-2xl md:text-3xl text-gray-400 font-light max-w-3xl leading-normal">
-              <span className="text-foreground font-normal">
-                {profile.title}
-              </span>
-            </p>
-            {/*                 
-                <div className="flex items-center justify-start gap-3 text-gray-500 font-mono text-sm sm:text-base">
-                    <MapPin className="w-4 h-4 text-[var(--accent)]" />
-                    <span>{profile.university}</span>
-                </div> */}
-          </motion.div>
+                <p className="text-xl sm:text-2xl md:text-3xl text-gray-400 font-light max-w-3xl leading-normal">
+                  <span className="text-foreground font-normal">
+                    {profile.title}
+                  </span>
+                </p>
+              </motion.div>
 
-          {profile.bio &&
-            profile.bio.trim() !== '""' &&
-            profile.bio.trim() !== "" && (
-              <motion.p
+              {profile.bio &&
+                profile.bio.trim() !== '""' &&
+                profile.bio.trim() !== "" && (
+                  <motion.p
+                    variants={fadeInUp}
+                    className="text-gray-400 text-lg sm:text-xl max-w-2xl leading-relaxed border-l-2 border-[var(--accent)] pl-6 text-left italic bg-muted/30 p-4 rounded-r-lg backdrop-blur-sm"
+                  >
+                    "{profile.bio}"
+                  </motion.p>
+                )}
+
+              <motion.div
                 variants={fadeInUp}
-                className="text-gray-400 text-lg sm:text-xl max-w-2xl leading-relaxed border-l-2 border-[var(--accent)] pl-6 text-left italic bg-muted/30 p-4 rounded-r-lg backdrop-blur-sm"
+                className="flex flex-col sm:flex-row gap-5 justify-start mt-12 text-sm sm:text-base"
               >
-                "{profile.bio}"
-              </motion.p>
-            )}
+                <Link
+                  href="/projects"
+                  className="group relative px-6 py-4 bg-[var(--accent)] text-foreground font-bold rounded-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)] w-fit"
+                >
+                  <span className="relative z-10 flex items-center gap-2 justify-center">
+                    View Projects{" "}
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                  <div className="absolute inset-0 bg-white/20 translate-y-full skew-y-12 group-hover:translate-y-0 transition-transform duration-500" />
+                </Link>
+                <button
+                  onClick={handleResumeClick}
+                  className="group px-6 py-4 bg-transparent border border-[var(--accent)] text-foreground font-bold rounded-lg hover:bg-[var(--accent)]/10 hover:border-[var(--accent)] transition-all flex items-center gap-2 justify-center w-fit"
+                >
+                  View Resume{" "}
+                  <FileText className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                </button>
+                <Link
+                  href="/contact"
+                  className="group px-6 py-4 bg-transparent border border-[#333] text-foreground font-bold rounded-lg hover:bg-muted hover:border-[var(--accent)] transition-all flex items-center gap-2 justify-center w-fit"
+                >
+                  Contact Me{" "}
+                  <Mail className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                </Link>
+              </motion.div>
 
-          <motion.div
-            variants={fadeInUp}
-            className="flex flex-col sm:flex-row gap-5 justify-start mt-12 text-sm sm:text-base"
-          >
-            <Link
-              href="/projects"
-              className="group relative px-6 py-4 bg-[var(--accent)] text-foreground font-bold rounded-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)] w-fit"
-            >
-              <span className="relative z-10 flex items-center gap-2 justify-center">
-                View Projects{" "}
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-              <div className="absolute inset-0 bg-white/20 translate-y-full skew-y-12 group-hover:translate-y-0 transition-transform duration-500" />
-            </Link>
-            <button
-              onClick={handleResumeClick}
-              className="group px-6 py-4 bg-transparent border border-[var(--accent)] text-foreground font-bold rounded-lg hover:bg-[var(--accent)]/10 hover:border-[var(--accent)] transition-all flex items-center gap-2 justify-center w-fit"
-            >
-              View Resume{" "}
-              <FileText className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            </button>
-            <Link
-              href="/contact"
-              className="group px-6 py-4 bg-transparent border border-[#333] text-foreground font-bold rounded-lg hover:bg-muted hover:border-[var(--accent)] transition-all flex items-center gap-2 justify-center w-fit"
-            >
-              Contact Me{" "}
-              <Mail className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-            </Link>
-          </motion.div>
+              <motion.div
+                variants={fadeInUp}
+                className="flex gap-6 items-center justify-start pt-1 mb-16 sm:mb-0"
+              >
+                {profile.linkedin && (
+                  <Link
+                    href={profile.linkedin}
+                    target="_blank"
+                    className="p-3 rounded-full bg-muted border border-[#333] text-gray-400 hover:text-[#0a66c2] hover:border-[#0a66c2]"
+                  >
+                    <Linkedin className="w-6 h-6" />
+                  </Link>
+                )}
+                {profile.github && (
+                  <Link
+                    href={profile.github}
+                    target="_blank"
+                    className="p-3 rounded-full bg-muted border border-[#333] text-gray-400 hover:text-foreground hover:border-white"
+                  >
+                    <Github className="w-6 h-6" />
+                  </Link>
+                )}
+              </motion.div>
+            </div>
 
-          <motion.div
-            variants={fadeInUp}
-            className="flex gap-6 items-center justify-start pt-1 mb-16 sm:mb-0"
-          >
-            {profile.linkedin && (
-              <Link
-                href={profile.linkedin}
-                target="_blank"
-                className="p-3 rounded-full bg-muted border border-[#333] text-gray-400 hover:text-[#0a66c2] hover:border-[#0a66c2]"
-              >
-                <Linkedin className="w-6 h-6" />
-              </Link>
-            )}
-            {profile.github && (
-              <Link
-                href={profile.github}
-                target="_blank"
-                className="p-3 rounded-full bg-muted border border-[#333] text-gray-400 hover:text-foreground hover:border-white"
-              >
-                <Github className="w-6 h-6" />
-              </Link>
-            )}
-          </motion.div>
+            {/* Right: Profile Photo */}
+            <motion.div
+              variants={fadeInUp}
+              className="flex-shrink-0"
+            >
+              <div className="relative group">
+                {/* Glow Effect Background */}
+                <div className="absolute -inset-4 bg-gradient-to-br from-[var(--accent)]/20 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Photo Container */}
+                <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72">
+                  {/* Border Ring with Animation */}
+                  <div className="absolute inset-0 rounded-full border-4 border-[var(--accent)] opacity-50 group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 rounded-full border-2 border-[var(--accent)]/30 animate-pulse" />
+                  
+                  {/* Image with Glassmorphism */}
+                  <div className="absolute inset-2 rounded-full overflow-hidden bg-gradient-to-br from-muted to-background backdrop-blur-sm border border-[#333] shadow-2xl">
+                    <img
+                      src={profile.photoUrl || "/assets/ami.jpeg"}
+                      alt={profile.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/assets/ami.jpeg";
+                      }}
+                    />
+                    {/* Overlay Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  
+                  {/* Decorative Corner Elements */}
+                  <div className="absolute -top-2 -right-2 w-6 h-6 border-t-2 border-r-2 border-[var(--accent)] rounded-tr-lg opacity-60" />
+                  <div className="absolute -bottom-2 -left-2 w-6 h-6 border-b-2 border-l-2 border-[var(--accent)] rounded-bl-lg opacity-60" />
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
 
         {/* Enhanced Scroll Indicator */}

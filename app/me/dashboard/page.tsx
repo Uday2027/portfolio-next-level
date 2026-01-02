@@ -41,6 +41,7 @@ interface Profile {
   github: string;
   linkedin: string;
   themeColor: string;
+  photoUrl: string;
   education: Education[];
   experience: Experience[];
   skills: Skill[];
@@ -121,7 +122,7 @@ function ProfileTab() {
              });
         }
         else setProfile({
-            name: "", title: "", university: "", bio: "", email: "", phone: "", location: "", github: "", linkedin: "", themeColor: "#2563eb",
+            name: "", title: "", university: "", bio: "", email: "", phone: "", location: "", github: "", linkedin: "", themeColor: "#2563eb", photoUrl: "",
             education: [], experience: [], skills: []
         });
       })
@@ -206,22 +207,52 @@ function ProfileTab() {
             <InputGroup label="Bio">
                 <textarea className="input-field h-24 resize-none" value={profile.bio} onChange={e => updateProfile("bio", e.target.value)} />
              </InputGroup>
-             <InputGroup label="Theme Color">
-                 <div className="flex gap-4 items-center h-24">
-                    <input 
-                        type="color" 
-                        value={profile.themeColor || "#2563eb"} 
-                        onChange={e => updateProfile("themeColor", e.target.value)}
-                        className="h-12 w-24 rounded cursor-pointer border-none bg-transparent"
-                    />
-                    <div className="text-sm text-gray-400">
-                        Pick primary accent color.
-                        <br/>
-                        <span className="text-xs uppercase font-mono text-gray-500">{profile.themeColor}</span>
-                    </div>
-                 </div>
-            </InputGroup>
            </div>
+           <InputGroup label="Profile Photo URL">
+               <div className="flex flex-col md:flex-row gap-4">
+                   <div className="flex-1">
+                       <input 
+                           className="input-field" 
+                           placeholder="https://example.com/photo.jpg or /assets/ami.jpeg" 
+                           value={profile.photoUrl || ""} 
+                           onChange={e => updateProfile("photoUrl", e.target.value)}
+                       />
+                       <p className="text-xs text-gray-500 mt-2 ml-1">
+                           Enter an image URL or leave empty to use default (/assets/ami.jpeg)
+                       </p>
+                   </div>
+                   {profile.photoUrl && (
+                       <div className="flex-shrink-0">
+                           <div className="text-xs text-gray-500 mb-1 ml-1">Preview:</div>
+                           <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-[var(--accent)] bg-muted">
+                               <img 
+                                   src={profile.photoUrl} 
+                                   alt="Profile preview" 
+                                   className="w-full h-full object-cover"
+                                   onError={(e) => {
+                                       (e.target as HTMLImageElement).src = "/assets/ami.jpeg";
+                                   }}
+                               />
+                           </div>
+                       </div>
+                   )}
+               </div>
+           </InputGroup>
+           <InputGroup label="Theme Color">
+               <div className="flex gap-4 items-center h-24">
+                  <input 
+                      type="color" 
+                      value={profile.themeColor || "#2563eb"} 
+                      onChange={e => updateProfile("themeColor", e.target.value)}
+                      className="h-12 w-24 rounded cursor-pointer border-none bg-transparent"
+                  />
+                  <div className="text-sm text-gray-400">
+                      Pick primary accent color.
+                      <br/>
+                      <span className="text-xs uppercase font-mono text-gray-500">{profile.themeColor}</span>
+                  </div>
+               </div>
+          </InputGroup>
         </div>
       </div>
 
