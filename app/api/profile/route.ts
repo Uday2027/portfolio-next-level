@@ -26,30 +26,34 @@ export async function PUT(request: Request) {
     const body = await request.json();
     await dbConnect();
 
-    // Remove immutable or sensitive fields from body to be safe
+    // Find the existing profile or create a new one
+    let profile = await Profile.findOne();
+    
+    // Remove immutable fields to avoid conflicts
     const { _id, createdAt, updatedAt, __v, ...updateData } = body;
 
-    const profile = await Profile.findOneAndUpdate(
-      {}, // find first profile
-      { $set: updateData },
-      { 
-        upsert: true, 
-        new: true, 
-        runValidators: true,
-        setDefaultsOnInsert: true 
-      }
-    );
+    if (profile) {
+      // Update existing
+      Object.assign(profile, updateData);
+    } else {
+      // Create new
+      profile = new Profile(updateData);
+    }
 
+    await profile.save();
     return NextResponse.json({ success: true, data: profile });
+    
   } catch (error: any) {
+    const bodyKeys = Object.keys(body || {}).join(", ") || "keys in body unknown";
     console.error("PUT Profile Error Detail:", {
       message: error.message,
-      stack: error.stack,
-      name: error.name
+      name: error.name,
+      keys: Object.keys(body || {})
     });
+    
     return NextResponse.json({ 
       success: false, 
-      error: error.message || "Internal Server Error" 
+      error: `Validation or Server Error: ${error.message}. Received keys: ${Object.keys(body || {}).join(", ")}`
     }, { status: 500 });
   }
 }
